@@ -1,0 +1,454 @@
+# ========================================================
+#            CaciottaCore - Configurazione Principale
+#      Plugin per PaperMC con Sistema Home e Autenticazione
+# ========================================================
+
+prefix: "&8[&6Caciotta&eCore&8]&r "
+
+# ========================================================
+#                    SISTEMA HOME
+# ========================================================
+home:
+  # Secondi di attesa prima del teletrasporto (0 per istantaneo)
+  teleport-delay: 3
+  # Annulla il teletrasporto se il giocatore si muove
+  cancel-on-move: true
+  # Annulla il teletrasporto se il giocatore subisce danno
+  cancel-on-damage: true
+  # Numero massimo di home predefinito
+  # Puoi dare permessi aggiuntivi: caciottacore.homes.<numero> o caciottacore.homes.unlimited
+  default-max-homes: 3
+  # Riproduci suono al teletrasporto
+  play-sound: true
+  # Spawn particelle al teletrasporto
+  spawn-particles: true
+
+# ========================================================
+#                    SISTEMA WARP
+# ========================================================
+warp:
+  # Secondi di attesa prima del teletrasporto (0 per istantaneo)
+  teleport-delay: 3
+  # Annulla il teletrasporto se il giocatore si muove
+  cancel-on-move: true
+  # Annulla il teletrasporto se il giocatore subisce danno
+  cancel-on-damage: true
+  # Riproduci suono al teletrasporto
+  play-sound: true
+  # Spawn particelle al teletrasporto
+  spawn-particles: true
+  # Numero massimo di warp creabili per un giocatore normale (0 o -1 per illimitati)
+  # Puoi dare permessi aggiuntivi: caciottacore.warp.max.<numero> o caciottacore.warp.unlimited
+  max-warps-per-player: 5
+
+# ========================================================
+#                    SISTEMA TPA
+# ========================================================
+tpa:
+  # Durata della richiesta in secondi prima che scada
+  timeout-seconds: 60
+  # Secondi di attesa prima del teletrasporto (0 per istantaneo)
+  teleport-delay: 3
+  # Annulla il teletrasporto se il giocatore si muove
+  cancel-on-move: true
+  # Annulla il teletrasporto se il giocatore subisce danno
+  cancel-on-damage: true
+  # Riproduci suono al teletrasporto
+  play-sound: true
+  # Spawn particelle al teletrasporto
+  spawn-particles: true
+
+# ========================================================
+#              SISTEMA TPBACK (RITORNO MORTE)
+# ========================================================
+tpback:
+  # Tempo massimo in secondi dalla morte entro cui e consentito eseguire /tpback
+  timeout-seconds: 30
+  # Numero massimo di utilizzi consentiti durante la giornata (giornaliero)
+  # E possibile assegnare il permesso 'caciottacore.tpback.unlimited' per utilizzi illimitati
+  max-daily-uses: 3
+  # Secondi di attesa prima del teletrasporto (0 per istantaneo)
+  teleport-delay: 3
+  # Annulla il teletrasporto se il giocatore si muove
+  cancel-on-move: true
+  # Annulla il teletrasporto se il giocatore subisce danno
+  cancel-on-damage: true
+  # Riproduci suono al teletrasporto
+  play-sound: true
+  # Spawn particelle al teletrasporto
+  spawn-particles: true
+  # Invia notifica informativa cliccabile al giocatore alla morte con il comando /tpback
+  notify-on-death: true
+
+# ========================================================
+#                SISTEMA NOVITÀ DEL SERVER (NEWS)
+# ========================================================
+news:
+  # Abilita o disabilita il sistema del libro delle novita
+  enabled: true
+  # Se true, apre automaticamente il libro all'accesso dopo il login o la registrazione
+  open-on-login: true
+  # Titolo del libro (massimo 16 caratteri)
+  book-title: "&6Novita Server"
+  # Autore del libro
+  book-author: "&eCaciottaCore"
+  # Riproduci il suono di sfogliamento pagina all'apertura del libro
+  play-sound: true
+  # Pagine del libro delle novita (supporta & e ritorni a capo \n).
+  # Se questa lista e vuota, il libro non viene aperto al login ("qualora ci fossero").
+  pages:
+    - "&6&l🧀 BENVENUTO!\n&8&m-------------------\n&7Ecco le novita recenti:\n\n&8» &e/tpback\n &7Torna al punto di morte!\n\n&8» &eModerazione:\n &7Ban, kick e mute attivi.\n\n&7Usa &e/aiuto &7per i comandi!"
+    - "&6&l🌟 AGGIORNAMENTI:\n&8&m-------------------\n&8» &eWarp Pubblici:\n &7Usa o crea con &e/setwarp&7!\n\n&8» &eSistema Sit:\n &7Siediti con &e/sit&7!\n\n&8» &eScoreboard:\n &7Statistiche in tempo reale!"
+
+# ========================================================
+#                    SISTEMA ZAINO (BAG)
+# ========================================================
+bag:
+  # Abilita o disabilita il comando /bag
+  enabled: true
+  # Numero di righe predefinito dello zaino (da 1 a 6 righe, 9-54 slot)
+  # I giocatori possono avere piu righe con i permessi: caciottacore.bag.rows.<1-6>
+  default-rows: 3
+  # Titolo dell'inventario dello zaino personale (supporta {player} e codici colore)
+  title: "&8Zaino Personale &7({player})"
+  # Titolo dell'inventario in modalita ispezione staff
+  title-admin: "&4Ispezione Zaino &8- &c{player}"
+  # Riproduci suoni all'apertura e chiusura dello zaino
+  play-sound: true
+  sound-open: "ITEM_BUNDLE_DROP_CONTENTS"
+  sound-close: "ITEM_BUNDLE_REMOVE_ONE"
+  # Blocca l'inserimento di shulker box nello zaino per evitare storage infinito o bug NBT
+  disallow-shulker-boxes: false
+
+# ========================================================
+#                SISTEMA AUTENTICAZIONE
+# ========================================================
+auth:
+  # Lunghezza minima e massima della password
+  min-password-length: 4
+  max-password-length: 32
+
+  # Tempo massimo in secondi per registrarsi o accedere prima di essere espulsi
+  timeout-seconds: 60
+
+  # Intervallo in secondi tra i messaggi di sollecito in chat/actionbar
+  reminder-interval-seconds: 4
+
+  # Numero massimo di tentativi di password errata prima dell'espulsione
+  max-login-attempts: 3
+
+  # Effetti applicati al giocatore prima dell'autenticazione (cecità e lentezza per evitare esplorazione)
+  effects:
+    blindness: true
+    slowness: true
+
+  # Sessione IP in minuti (se un utente rientra dallo stesso IP entro questi minuti, viene autenticato automaticamente)
+  # Imposta 0 per richiedere sempre la password
+  session-timeout-minutes: 10
+
+# ========================================================
+#                  SISTEMA SCOREBOARD
+# ========================================================
+scoreboard:
+  # Abilita o disabilita la scoreboard laterale
+  enabled: true
+
+  # Intervallo di aggiornamento delle statistiche in tick (20 tick = 1 secondo)
+  update-interval-ticks: 20
+
+  # Mostra o nasconde i numeri rossi sul bordo destro della scoreboard
+  show-numbers: false
+
+  # Titolo statico della scoreboard (supporta codici colore & e hex)
+  title: "&6&lCACIOTTA &e&lCORE"
+
+  # Animazione del titolo (cicla tra i frame nell'intervallo specificato)
+  animated-title:
+    enabled: true
+    interval-ticks: 10
+    frames:
+      - "&6&lCACIOTTA &e&lCORE"
+      - "&e&lCACIOTTA &6&lCORE"
+      - "&f&lCACIOTTA &e&lCORE"
+      - "&e&lCACIOTTA &6&lCORE"
+
+  # Righe della scoreboard (massimo 15 righe per limiti Minecraft).
+  # Placeholder disponibili:
+  #   {player}          - Nome del giocatore
+  #   {rank}            - Grado del giocatore (&cAdmin, &6Mod, &aVIP, &7Utente)
+  #   {rank_prefix}     - Prefisso del grado del giocatore
+  #   {x}               - Coordinata X (blocco)
+  #   {y}               - Coordinata Y (blocco)
+  #   {z}               - Coordinata Z (blocco)
+  #   {coords}          - Coordinate formattate (X, Y, Z)
+  #   {direction}       - Direzione verso cui guarda (Nord, Sud, Est, Ovest)
+  #   {direction_short} - Direzione abbreviata (N, S, E, W)
+  #   {online}          - Giocatori attualmente online
+  #   {max_online}      - Numero massimo di giocatori
+  #   {ping}            - Ping (latenza) in millisecondi
+  #   {kills}           - Uccisioni totali (PvP)
+  #   {deaths}          - Morti totali
+  #   {mob_kills}       - Mostri/mob uccisi
+  #   {kdr}             - Rapporto K/D (Kill/Death)
+  #   {world}           - Nome del mondo attuale
+  #   {level}           - Livello di esperienza
+  #   {health}          - Vita attuale del giocatore
+  #   {max_health}      - Vita massima del giocatore
+  #   {homes}           - Home salvate dal giocatore
+  #   {max_homes}       - Limite massimo di home del giocatore
+  #   {status}          - Stato autenticazione (&aAutenticato / &cNon Autenticato)
+  #   {date}            - Data odierna (GG/MM/AAAA)
+  #   {time}            - Ora attuale (HH:mm)
+  lines:
+    - "&7&m-------------------"
+    - "&eUtente: &f{player}"
+    - "&eGrado: {rank}"
+    - " &8» &7Pos: &a{x}&7, &a{y}&7, &a{z} &8(&e{direction_short}&8)"
+    - ""
+    - "&6&lPvP:"
+    - " &8» &fKill: &a{kills} &7| &fMorti: &c{deaths}"
+    - " &8» &fK/D: &e{kdr}"
+    - ""
+    - "&6&lServer:"
+    - " &8» &fOnline: &b{online}&7/&b{max_online}"
+    - " &8» &fPing: &a{ping}ms"
+    - " &8» &fHome: &6{homes}&7/&6{max_homes}"
+    - ""
+    - "&emc.caciotta.it"
+
+# ========================================================
+#                    SISTEMA SIT
+# ========================================================
+sit:
+  # Abilita o disabilita il comando /sit
+  enabled: true
+  # Permette di sedersi cliccando con il tasto destro su scale e gradini (slabs)
+  click-to-sit: true
+  # Richiede di avere la mano vuota per sedersi cliccando sui blocchi
+  require-empty-hand: true
+  # Invia il messaggio nella actionbar anziche intasare la chat
+  use-actionbar: true
+
+# ========================================================
+#                  SISTEMA BROADCAST
+# ========================================================
+broadcast:
+  # Riproduci un suono di avviso a tutti i giocatori quando viene inviato un annuncio
+  play-sound: true
+  sound: "BLOCK_NOTE_BLOCK_PLING"
+  # Prefisso per broadcast inline semplice (quando fancy-banner e false)
+  prefix: "&8[&4&lANNUNCIO&8]&r "
+  # Se true, invia l'annuncio chat con un banner decorativo multiriga
+  fancy-banner: true
+  banner-header: "&8&m----------------------------------------"
+  banner-title: "        &c&l📢 ANNUNCIO DELLO STAFF"
+  banner-footer: "&8&m----------------------------------------"
+
+# ========================================================
+#                       MESSAGGI
+# ========================================================
+messages:
+  no-permission: "&cNon hai il permesso di eseguire questo comando."
+  player-only: "&cQuesto comando puo essere eseguito solo da un giocatore."
+  plugin-reloaded: "&aTutte le configurazioni e i moduli di CaciottaCore sono stati ricaricati con successo!"
+
+  home:
+    set-success: "&aHome &e{name} &aimpostata con successo!"
+    set-limit-reached: "&cHai raggiunto il limite massimo di home consentite (&e{limit}&c)."
+    invalid-name: "&cIl nome della home puo contenere solo lettere e numeri (max 16 caratteri)."
+    not-found: "&cLa home &e{name} &cnon esiste."
+    teleporting-now: "&aTeletrasporto alla home &e{name}&a in corso..."
+    teleport-countdown: "&7Teletrasporto tra &e{seconds} secondi&7... Non muoverti!"
+    teleport-cancelled-move: "&cTeletrasporto annullato perche ti sei mosso!"
+    teleport-cancelled-damage: "&cTeletrasporto annullato perche hai subito danno!"
+    deleted: "&aHome &e{name} &aeliminata con successo."
+    list-header: "&6=== Le tue Home ({count}/{max}) ==="
+    list-empty: "&7Non hai ancora impostato nessuna home. Usa &e/sethome [nome]&7."
+    list-entry: "&7- &e{name} &8(&7{world}, {x}, {y}, {z}&8)"
+
+  warp:
+    set-success: "&aWarp &e{name} &aimpostato con successo!"
+    updated-success: "&aWarp &e{name} &aaggiornato con successo alla tua posizione attuale!"
+    set-limit-reached: "&cHai raggiunto il limite massimo di warp che puoi creare (&e{limit}&c)."
+    already-exists-by-other: "&cIl warp &e{name} &eesiste gia ed appartiene a &f{creator}&c!"
+    invalid-name: "&cIl nome del warp puo contenere solo lettere, numeri e trattini (max 16 caratteri)."
+    not-found: "&cIl warp &e{name} &cnon esiste. Usa &e/warps&c per vedere la lista."
+    teleporting-now: "&aTeletrasporto al warp &e{name}&a in corso..."
+    teleport-countdown: "&7Teletrasporto al warp &e{name}&7 tra &e{seconds} secondi&7... Non muoverti!"
+    teleport-cancelled-move: "&cTeletrasporto al warp annullato perche ti sei mosso!"
+    teleport-cancelled-damage: "&cTeletrasporto al warp annullato perche hai subito danno!"
+    deleted: "&aWarp &e{name} &aeliminato con successo."
+    delete-not-owner: "&cNon puoi eliminare il warp &e{name}&c perche non e stato creato da te!"
+    list-header: "&6=== Warp Disponibili ({count}) ==="
+    list-empty: "&7Non e presente alcun warp sul server. Usa &e/setwarp <nome>&7 per crearne uno!"
+    list-entry: "&7- &e{name} &8(&7{world}, {x}, {y}, {z}&8)&7 creato da &f{creator}"
+
+  auth:
+    prompt-register: "&eBenvenuto! Registrati con: &6/register <password> <confermaPassword>"
+    prompt-login: "&eBentornato! Accedi con: &6/login <password>"
+    title-register: "&6&lREGISTRATI"
+    subtitle-register: "&eUsa /register <password> <conferma>"
+    title-login: "&6&lACCEDI"
+    subtitle-login: "&eUsa /login <password>"
+    actionbar-register: "&cRegistrati con &6/register <password> <ripeti>"
+    actionbar-login: "&cAccedi con &6/login <password>"
+
+    already-logged-in: "&cHai gia effettuato l'accesso."
+    not-logged-in: "&cDevi prima accedere con &6/login <password>&c."
+    must-register-first: "&cDevi prima registrarti con &6/register <password> <conferma>&c."
+    already-registered: "&cSei gia registrato. Usa &6/login <password>&c."
+    password-too-short: "&cLa password deve contenere almeno &e{min} caratteri&c."
+    password-too-long: "&cLa password puo contenere al massimo &e{max} caratteri&c."
+    passwords-do-not-match: "&cLe password inserite non corrispondono!"
+    register-success: "&aRegistrazione completata con successo! Benvenuto sul server."
+    login-success: "&aAccesso effettuato con successo! Buona permanenza."
+    wrong-password: "&cPassword errata! Tentativi rimasti: &e{attempts}&c."
+    login-timeout: "&cTempo scaduto per accedere al server."
+    max-attempts-exceeded: "&cHai superato il numero massimo di tentativi di accesso."
+    blocked-action: "&cDevi prima accedere per compiere questa azione."
+
+    change-pass-success: "&aPassword aggiornata con successo!"
+    change-pass-wrong-old: "&cLa vecchia password inserita non e corretta."
+
+    admin-player-not-found: "&cGiocatore non trovato nel database."
+    admin-unregistered: "&aAccount di &e{player} &ade-registrato con successo."
+
+  tpa:
+    usage: "&cUso corretto: &e/{label} <giocatore>"
+    cannot-tpa-self: "&cNon puoi inviare una richiesta di teletrasporto a te stesso!"
+    player-not-found: "&cGiocatore non trovato o non online."
+    player-not-authenticated: "&cIl giocatore &e{player} &cdeve prima autenticarsi prima di poter ricevere richieste."
+    request-already-sent: "&cHai gia inviato una richiesta attiva a &e{player}&c. Attendi o usa &e/tpacancel&c."
+    request-sent: "&aRichiesta di teletrasporto inviata a &e{player}&a! Scadra tra &e{timeout} secondi&a."
+    request-received: "&e{player} &ati ha inviato una richiesta di teletrasporto!"
+    request-received-info: "&7Usa i pulsanti o scrivi &a/tpaccept &7oppure &c/tpdeny&7:"
+    button-accept: "&a&l[ACCETTA]"
+    button-deny: "&c&l[RIFIUTA]"
+    button-accept-hover: "&aClicca qui per accettare la richiesta di &e{player}"
+    button-deny-hover: "&cClicca qui per rifiutare la richiesta di &e{player}"
+    no-pending-requests: "&cNon hai richieste di teletrasporto in sospeso."
+    request-expired-sender: "&cLa tua richiesta di teletrasporto per &e{player} &ce scaduta."
+    request-expired-target: "&cLa richiesta di teletrasporto di &e{player} &ce scaduta."
+    request-accepted-sender: "&e{player} &aha accettato la tua richiesta di teletrasporto!"
+    request-accepted-target: "&aHai accettato la richiesta di teletrasporto di &e{player}&a."
+    request-denied-sender: "&c{player} ha rifiutato la tua richiesta di teletrasporto."
+    request-denied-target: "&cHai rifiutato la richiesta di teletrasporto di &e{player}&c."
+    request-cancelled: "&aHai annullato la richiesta di teletrasporto verso &e{player}&a."
+    no-request-to-cancel: "&cNon hai alcuna richiesta di teletrasporto attiva da annullare."
+    no-request-from-player: "&cNon hai ricevuto alcuna richiesta di teletrasporto da &e{player}&c."
+    teleport-countdown: "&7Teletrasporto verso &e{player} &7tra &e{seconds} secondi&7... Non muoverti!"
+    teleport-cancelled-move: "&cTeletrasporto verso &e{player} &cannullato perche ti sei mosso!"
+    teleport-cancelled-damage: "&cTeletrasporto verso &e{player} &cannullato perche hai subito danno!"
+    teleport-success: "&aTeletrasportato con successo da &e{player}&a!"
+
+  tpback:
+    usage: "&cUso corretto: &e/{label}"
+    no-death-location: "&cNon hai una posizione di morte valida o recente a cui tornare."
+    expired: "&cIl tempo limite per tornare al punto di morte e scaduto! Devi usarlo entro &e{seconds} secondi &cdalla morte."
+    daily-limit-reached: "&cHai raggiunto il limite massimo giornaliero di teletrasporti di ritorno (&e{max}&c). Riprova domani!"
+    still-dead: "&cDevi prima rinascere prima di poter utilizzare questo comando!"
+    world-not-loaded: "&cIl mondo in cui sei morto non e attualmente caricato."
+    teleporting-now: "&aTeletrasporto al punto di morte in corso..."
+    teleport-countdown: "&7Teletrasporto al punto di morte tra &e{seconds} secondi&7... Non muoverti!"
+    teleport-cancelled-move: "&cTeletrasporto al punto di morte annullato perche ti sei mosso!"
+    teleport-cancelled-damage: "&cTeletrasporto al punto di morte annullato perche hai subito danno!"
+    teleport-success: "&aTeletrasportato con successo al punto di morte! &7(Usi rimasti oggi: &e{remaining}&7/&e{max}&7)"
+    teleport-success-unlimited: "&aTeletrasportato con successo al punto di morte!"
+    death-notice: "&7Sei morto! Clicca o scrivi &e/tpback &7entro &e{seconds}s &7per tornare al punto di morte. &8(&e{remaining}&8/&e{max} &7usi rimasti oggi&8)"
+
+
+  scoreboard:
+    toggle-on: "&aScoreboard attivata con successo!"
+    toggle-off: "&cScoreboard disattivata. Usa &e/sb&c per riattivarla."
+    reloaded: "&aConfigurazione della scoreboard ricaricata con successo!"
+
+  rank:
+    player-not-found: "&cGiocatore &e{player} &cnon trovato."
+    rank-not-found: "&cIl rank &e{rank} &cnon esiste. Usa &e/rank list&c per vederli tutti."
+    set-success-sender: "&aHai impostato il rank di &e{player} &aa {rank}&a."
+    set-success-target: "&aIl tuo rank e stato aggiornato a {rank}&a!"
+    reset-success-sender: "&aHai ripristinato il rank di &e{player} &aal default ({rank}&a)."
+    reset-success-target: "&aIl tuo rank e stato reimpostato al default ({rank}&a)."
+    default-updated: "&aIl rank predefinito per i nuovi utenti e ora {rank}&a."
+    reloaded: "&aConfigurazione dei rank ricaricata con successo!"
+
+  sit:
+    sit-success: "&aTi sei seduto. Premi &eShift &aper alzarti."
+    stand-up: "&7Ti sei alzato in piedi."
+    already-sitting: "&cSei gia seduto! Premi &eShift &cper alzarti."
+    cannot-sit: "&cNon puoi sederti in questa condizione (volo, nuoto o sonno)!"
+    cannot-sit-air: "&cNon puoi sederti a mezz'aria o mentre sei in caduta!"
+    cannot-sit-liquid: "&cNon puoi sederti nell'acqua o nella lava!"
+    occupied: "&cQuesto posto e gia occupato da un altro giocatore!"
+    disabled: "&cIl comando /sit e attualmente disabilitato sul server."
+
+  broadcast:
+    usage: "&cUso: &e/{label} <messaggio> &7(oppure &e/{label} title <testo>&7, &e/{label} actionbar <testo>&7)"
+    no-message: "&cDevi specificare un messaggio da trasmettere a tutti i giocatori!"
+
+  moderation:
+    ban-usage: "&cUso corretto: &e/{label} <giocatore> [motivo]"
+    ban-success: "&aHai bannato permanentemente &e{target}&a. &7Motivo: &f{reason}"
+    ban-broadcast: "&c&lBAN &8» &e{target} &7e stato bannato permanentemente da &c{staff}&7! Motivo: &f{reason}"
+    ban-screen: "&c&lSEI STATO BANNATO DAL SERVER!\n&7Motivo: &f{reason}\n&7Staffer: &e{staff}\n&7Durata: &c{duration}\n&7Scadenza: &c{expires}"
+
+    tempban-usage: "&cUso corretto: &e/{label} <giocatore> <durata> [motivo]"
+    tempban-success: "&aHai bannato &e{target} &aper &e{duration}&a. &7Motivo: &f{reason}"
+    tempban-broadcast: "&c&lTEMPBAN &8» &e{target} &7e stato bannato da &c{staff} &7per &e{duration}&7! Motivo: &f{reason}"
+
+    unban-usage: "&cUso corretto: &e/{label} <giocatore>"
+    unban-success: "&aHai revocato il ban di &e{target}&a con successo."
+    unban-broadcast: "&a&lUNBAN &8» &e{target} &7e stato sbannato da &e{staff}&7."
+    not-banned: "&cIl giocatore &e{target} &cnon risulta attualmente bannato."
+
+    kick-usage: "&cUso corretto: &e/{label} <giocatore> [motivo]"
+    kick-success: "&aHai espulso &e{target}&a dal server. &7Motivo: &f{reason}"
+    kick-broadcast: "&6&lKICK &8» &e{target} &7e stato cacciato da &e{staff}&7! Motivo: &f{reason}"
+    kick-screen: "&c&lSEI STATO CACCIATO DAL SERVER!\n&7Staffer: &e{staff}\n&7Motivo: &f{reason}"
+
+    mute-usage: "&cUso corretto: &e/{label} <giocatore> [motivo]"
+    mute-success: "&aHai mutato permanentemente &e{target}&a. &7Motivo: &f{reason}"
+    mute-broadcast: "&e&lMUTE &8» &e{target} &7e stato mutato permanentemente da &6{staff}&7! Motivo: &f{reason}"
+    mute-notice-player: "&cSei stato mutato permanentemente da &e{staff}&c. &7Motivo: &f{reason}"
+    mute-chat-blocked: "&cSei mutato permanentemente! Non puoi scrivere in chat. &7Motivo: &f{reason}"
+
+    tempmute-usage: "&cUso corretto: &e/{label} <giocatore> <durata> [motivo]"
+    tempmute-success: "&aHai mutato &e{target} &aper &e{duration}&a. &7Motivo: &f{reason}"
+    tempmute-broadcast: "&e&lTEMPMUTE &8» &e{target} &7e stato mutato da &6{staff} &7per &e{duration}&7! Motivo: &f{reason}"
+    tempmute-notice-player: "&cSei stato mutato per &e{duration} &cda &e{staff}&c. &7Motivo: &f{reason}"
+    tempmute-chat-blocked: "&cSei attualmente mutato per ancora &e{remaining}&c! &7Motivo: &f{reason}"
+
+    unmute-usage: "&cUso corretto: &e/{label} <giocatore>"
+    unmute-success: "&aHai revocato il mute di &e{target}&a con successo."
+    unmute-broadcast: "&a&lUNMUTE &8» &e{target} &7e stato smutato da &e{staff}&7."
+    unmute-notice-player: "&aIl tuo mute e stato revocato! Ora puoi nuovamente scrivere in chat."
+    not-muted: "&cIl giocatore &e{target} &cnon risulta attualmente mutato."
+
+    cannot-punish-self: "&cNon puoi sanzionare te stesso!"
+    cannot-punish-staff: "&cNon puoi sanzionare un membro dello staff o un utente protetto!"
+    invalid-duration: "&cDurata specificata non valida: &e{error}"
+    player-not-found: "&cIl giocatore &e{target} &cnon e online o non e stato trovato."
+
+  news:
+    no-news: "&cAl momento non sono presenti novita o aggiornamenti recenti del server."
+    reloaded: "&aConfigurazione del libro delle novita ricaricata con successo!"
+    usage-admin: "&cUso: &e/news &7(oppure &e/news toggle&7, &e/news reload&7)"
+    toggled-to-chat: "&eD'ora in poi all'accesso riceverai una notifica in chat con il link cliccabile anziche aprire il libro."
+    toggled-to-book: "&aD'ora in poi il libro delle novita si aprira automaticamente a ogni tuo accesso."
+    chat-notice: "&7Ci sono novita recenti sul server! &e&l[CLICCA QUI]&7 per aprirle."
+    chat-notice-hover: "&eClicca per aprire il libro delle novita!"
+    book-button-hide: "&c&l[Non mostrare all'accesso]"
+    book-button-hide-hover: "&7Clicca per ricevere solo un avviso in chat con link all'accesso."
+    book-button-show: "&a&l[Riattiva apertura all'accesso]"
+    book-button-show-hover: "&7Clicca per riattivare l'apertura automatica del libro all'accesso."
+
+  bag:
+    open-other: "&aStai visualizzando lo zaino di &e{target}&a."
+    target-not-found: "&cGiocatore &e{target} &cnon trovato o mai entrato nel server."
+    cannot-open-dead: "&cNon puoi aprire lo zaino mentre sei morto!"
+    item-forbidden: "&cNon puoi inserire questo oggetto (&e{item}&c) nello zaino!"
+    disabled: "&cIl sistema dello zaino e attualmente disabilitato."
+
+
+
+

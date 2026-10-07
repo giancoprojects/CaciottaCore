@@ -1,0 +1,375 @@
+name: CaciottaCore
+version: '${project.version}'
+main: it.caciotta.core.CaciottaCore
+api-version: '1.21'
+author: CaciottaCore
+description: Plugin completo per Paper Minecraft con sistema Home e Autenticazione (Login/Register).
+
+commands:
+  sethome:
+    description: Imposta una home nella tua posizione attuale.
+    usage: /sethome [nome]
+    aliases: [creahome]
+    permission: caciottacore.home.set
+  home:
+    description: Teletrasportati a una delle tue home.
+    usage: /home [nome]
+    permission: caciottacore.home.use
+  delhome:
+    description: Elimina una tua home esistente.
+    usage: /delhome <nome>
+    aliases: [remhome, rhome]
+    permission: caciottacore.home.delete
+  homes:
+    description: Visualizza l'elenco delle tue home salvate.
+    usage: /homes
+    aliases: [listhomes, homelist]
+    permission: caciottacore.home.list
+  setwarp:
+    description: Crea o aggiorna un punto di teletrasporto pubblico (warp).
+    usage: /setwarp <nome>
+    aliases: [creawarp, addwarp]
+    permission: caciottacore.warp.set
+  warp:
+    description: Teletrasportati a un warp pubblico.
+    usage: /warp [nome]
+    aliases: [tpwarp]
+    permission: caciottacore.warp.use
+  delwarp:
+    description: Elimina un warp esistente (creato da te o con permessi admin).
+    usage: /delwarp <nome>
+    aliases: [remwarp, rwarp, deletewarp]
+    permission: caciottacore.warp.delete
+  warps:
+    description: Visualizza l'elenco dei warp disponibili sul server.
+    usage: /warps
+    aliases: [warplist, listwarps]
+    permission: caciottacore.warp.list
+  register:
+    description: Registra il tuo account protetto da password.
+    usage: /register <password> <confermaPassword>
+    aliases: [reg]
+  login:
+    description: Accedi al server inserendo la tua password.
+    usage: /login <password>
+    aliases: [l]
+  changepassword:
+    description: Modifica la tua password corrente.
+    usage: /changepassword <vecchiaPassword> <nuovaPassword>
+    aliases: [cp, changepass]
+    permission: caciottacore.auth.changepassword
+  authadmin:
+    description: Gestione amministrativa del sistema di login.
+    usage: /authadmin <unregister|reload> [giocatore]
+    permission: caciottacore.admin
+  tpa:
+    description: Invia una richiesta di teletrasporto a un giocatore.
+    usage: /tpa <giocatore>
+    permission: caciottacore.tpa.use
+  tpaccept:
+    description: Accetta una richiesta di teletrasporto in sospeso.
+    usage: /tpaccept [giocatore]
+    aliases: [tpyes]
+    permission: caciottacore.tpa.use
+  tpdeny:
+    description: Rifiuta una richiesta di teletrasporto in sospeso.
+    usage: /tpdeny [giocatore]
+    aliases: [tpno]
+    permission: caciottacore.tpa.use
+  tpacancel:
+    description: Annulla la richiesta di teletrasporto inviata.
+    usage: /tpacancel
+    aliases: [tpabort]
+    permission: caciottacore.tpa.use
+  tpback:
+    description: Teletrasportati nel punto della tua ultima morte entro 30 secondi (max 3 volte al giorno).
+    usage: /tpback
+    aliases: [back]
+    permission: caciottacore.tpback.use
+  scoreboard:
+    description: Attiva o disattiva la visualizzazione della scoreboard.
+    usage: /scoreboard [toggle|reload]
+    aliases: [sb, sidebar, cscoreboard]
+    permission: caciottacore.scoreboard.use
+  rank:
+    description: Gestione e visualizzazione dei rank e dei permessi.
+    usage: /rank <list|info|set|reset|default|reload>
+    aliases: [ranks, setrank]
+    permission: caciottacore.rank.use
+  sit:
+    description: Siediti sul terreno o alzati.
+    usage: /sit
+    aliases: [siediti, chair]
+    permission: caciottacore.sit
+  broadcast:
+    description: Invia un annuncio a tutti i giocatori del server.
+    usage: /broadcast <messaggio>
+    aliases: [bc, annuncio, alert, yell]
+    permission: caciottacore.broadcast
+  aiuto:
+    description: Mostra un riassunto interattivo di tutti i comandi disponibili sul server.
+    usage: /aiuto [sezione]
+    aliases: [help, comandi, guide, guida]
+    permission: caciottacore.help
+  reload:
+    description: Ricarica tutte le configurazioni e i moduli di CaciottaCore.
+    usage: /reload
+    aliases: [corereload, caciottareload, ccreload]
+    permission: caciottacore.admin
+  caciottacore:
+    description: Comando principale di gestione e reload per CaciottaCore.
+    usage: /caciottacore [reload]
+    aliases: [core]
+    permission: caciottacore.admin
+  ban:
+    description: Banna permanentemente un giocatore dal server.
+    usage: /ban <giocatore> [motivo]
+    permission: caciottacore.mod.ban
+  tempban:
+    description: Banna temporaneamente un giocatore per la durata specificata.
+    usage: /tempban <giocatore> <durata> [motivo]
+    permission: caciottacore.mod.ban
+  unban:
+    description: Revoca il ban di un giocatore.
+    usage: /unban <giocatore>
+    aliases: [pardon]
+    permission: caciottacore.mod.unban
+  kick:
+    description: Espelle/caccia immediatamente un giocatore dal server.
+    usage: /kick <giocatore> [motivo]
+    aliases: [caccia, espelli]
+    permission: caciottacore.mod.kick
+  mute:
+    description: Muta permanentemente un giocatore impedendogli di scrivere in chat.
+    usage: /mute <giocatore> [motivo]
+    permission: caciottacore.mod.mute
+  tempmute:
+    description: Muta temporaneamente un giocatore per la durata specificata.
+    usage: /tempmute <giocatore> <durata> [motivo]
+    permission: caciottacore.mod.mute
+  unmute:
+    description: Revoca il mute di un giocatore.
+    usage: /unmute <giocatore>
+    permission: caciottacore.mod.unmute
+  news:
+    description: Mostra il libro interattivo con le novita recenti del server.
+    usage: /news [reload]
+    aliases: [novita, updates]
+    permission: caciottacore.news.use
+  bag:
+    description: Apri il tuo zaino personale o ispeziona quello di un altro giocatore.
+    usage: /bag [giocatore]
+    aliases: [backpack, zaino, borsa]
+    permission: caciottacore.bag.use
+
+permissions:
+  caciottacore.*:
+    description: Accesso completo a tutte le funzionalita del plugin.
+    default: op
+    children:
+      caciottacore.admin: true
+      caciottacore.broadcast: true
+      caciottacore.reload: true
+      caciottacore.rank.*: true
+      caciottacore.sit: true
+      caciottacore.home.*: true
+      caciottacore.warp.*: true
+      caciottacore.auth.*: true
+      caciottacore.tpa.*: true
+      caciottacore.tpback.*: true
+      caciottacore.mod.*: true
+      caciottacore.news.*: true
+      caciottacore.scoreboard.*: true
+      caciottacore.help: true
+  caciottacore.admin:
+    description: Permesso per comandi amministrativi e ricarica config.
+    default: op
+    children:
+      caciottacore.mod.*: true
+      caciottacore.broadcast: true
+      caciottacore.reload: true
+  caciottacore.home.*:
+    description: Accesso a tutti i comandi e funzionalita home.
+    default: op
+    children:
+      caciottacore.home.use: true
+      caciottacore.home.set: true
+      caciottacore.home.delete: true
+      caciottacore.home.list: true
+      caciottacore.home.bypasscooldown: true
+  caciottacore.home.use:
+    description: Permette di teletrasportarsi alla home.
+    default: true
+  caciottacore.home.set:
+    description: Permette di impostare una home.
+    default: true
+  caciottacore.home.delete:
+    description: Permette di cancellare una home.
+    default: true
+  caciottacore.home.list:
+    description: Permette di vedere le proprie home.
+    default: true
+  caciottacore.home.bypasscooldown:
+    description: Permette di teletrasportarsi istantaneamente senza attendere il conto alla rovescia.
+    default: op
+  caciottacore.warp.*:
+    description: Accesso a tutti i comandi e funzionalita warp.
+    default: op
+    children:
+      caciottacore.warp.use: true
+      caciottacore.warp.set: true
+      caciottacore.warp.delete: true
+      caciottacore.warp.list: true
+      caciottacore.warp.bypasscooldown: true
+      caciottacore.warp.admin: true
+  caciottacore.warp.use:
+    description: Permette di teletrasportarsi a un warp con /warp.
+    default: true
+  caciottacore.warp.set:
+    description: Permette di creare o aggiornare un warp con /setwarp (abilitato a tutti gli utenti).
+    default: true
+  caciottacore.warp.delete:
+    description: Permette di eliminare un proprio warp con /delwarp.
+    default: true
+  caciottacore.warp.list:
+    description: Permette di visualizzare l'elenco dei warp con /warps.
+    default: true
+  caciottacore.warp.bypasscooldown:
+    description: Permette di teletrasportarsi a un warp istantaneamente senza attendere il conto alla rovescia.
+    default: op
+  caciottacore.warp.admin:
+    description: Permette di gestire ed eliminare qualsiasi warp e ignorare i limiti massimi.
+    default: op
+  caciottacore.auth.*:
+    description: Accesso a tutte le funzionalita auth.
+    default: op
+    children:
+      caciottacore.auth.changepassword: true
+  caciottacore.auth.changepassword:
+    description: Permette di cambiare la propria password.
+    default: true
+  caciottacore.tpa.*:
+    description: Accesso a tutti i comandi e funzionalita TPA.
+    default: op
+    children:
+      caciottacore.tpa.use: true
+      caciottacore.tpa.bypasscooldown: true
+  caciottacore.tpa.use:
+    description: Permette di inviare, accettare e rifiutare richieste di teletrasporto.
+    default: true
+  caciottacore.tpa.bypasscooldown:
+    description: Permette di teletrasportarsi istantaneamente tramite TPA senza conto alla rovescia.
+    default: op
+  caciottacore.tpback.*:
+    description: Accesso completo a tutte le funzionalita di tpback.
+    default: op
+    children:
+      caciottacore.tpback.use: true
+      caciottacore.tpback.bypasscooldown: true
+      caciottacore.tpback.unlimited: true
+  caciottacore.tpback.use:
+    description: Permette di teletrasportarsi alla posizione della propria ultima morte con /tpback.
+    default: true
+  caciottacore.tpback.bypasscooldown:
+    description: Permette di teletrasportarsi al punto di morte istantaneamente senza attendere il conto alla rovescia.
+    default: op
+  caciottacore.tpback.unlimited:
+    description: Permette di usare il comando /tpback senza limite massimo giornaliero.
+    default: op
+  caciottacore.scoreboard.*:
+    description: Accesso a tutte le funzionalita della scoreboard.
+    default: op
+    children:
+      caciottacore.scoreboard.use: true
+      caciottacore.scoreboard.admin: true
+  caciottacore.scoreboard.use:
+    description: Permette di visualizzare e fare toggle della scoreboard.
+    default: true
+  caciottacore.scoreboard.admin:
+    description: Permette di ricaricare la scoreboard con /sb reload.
+    default: op
+  caciottacore.rank.*:
+    description: Accesso a tutte le funzionalita del sistema rank.
+    default: op
+    children:
+      caciottacore.rank.use: true
+      caciottacore.rank.admin: true
+  caciottacore.rank.use:
+    description: Permette di visualizzare la lista dei rank e il proprio rank con /rank info.
+    default: true
+  caciottacore.rank.admin:
+    description: Permette di assegnare rank, cambiare default e ricaricare la configurazione rank.
+    default: op
+  caciottacore.chat.color:
+    description: Permette di usare codici colore e formattazione '&' nella chat.
+    default: op
+  caciottacore.sit:
+    description: Permette di usare il comando /sit e sedersi sui blocchi.
+    default: true
+  caciottacore.broadcast:
+    description: Permette di usare il comando /broadcast per inviare annunci globali.
+    default: op
+  caciottacore.help:
+    description: Permette di visualizzare la guida dei comandi con /aiuto.
+    default: true
+  caciottacore.reload:
+    description: Permette di ricaricare tutte le configurazioni e i moduli con /reload.
+    default: op
+  caciottacore.mod.*:
+    description: Accesso completo a tutti i comandi di moderazione dello staff.
+    default: op
+    children:
+      caciottacore.mod.ban: true
+      caciottacore.mod.unban: true
+      caciottacore.mod.kick: true
+      caciottacore.mod.mute: true
+      caciottacore.mod.unmute: true
+      caciottacore.mod.bypass: true
+  caciottacore.mod.ban:
+    description: Permette di bannare permanentemente o temporaneamente utenti dal server.
+    default: op
+  caciottacore.mod.unban:
+    description: Permette di revocare il ban di un utente con /unban.
+    default: op
+  caciottacore.mod.kick:
+    description: Permette di cacciare/espellere utenti dal server con /kick.
+    default: op
+  caciottacore.mod.mute:
+    description: Permette di mutare permanentemente o temporaneamente utenti in chat.
+    default: op
+  caciottacore.mod.unmute:
+    description: Permette di revocare il mute di un utente con /unmute.
+    default: op
+  caciottacore.mod.bypass:
+    description: Immunita dalle sanzioni di moderazione dello staff (ban, kick, mute).
+    default: op
+  caciottacore.news.*:
+    description: Accesso completo a tutte le funzionalita delle novita.
+    default: op
+    children:
+      caciottacore.news.use: true
+      caciottacore.news.admin: true
+  caciottacore.news.use:
+    description: Permette di visualizzare il libro delle novita con /news.
+    default: true
+  caciottacore.news.admin:
+    description: Permette di ricaricare le novita con /news reload.
+    default: op
+  caciottacore.bag.*:
+    description: Accesso completo a tutte le funzionalita dello zaino.
+    default: op
+    children:
+      caciottacore.bag.use: true
+      caciottacore.bag.admin: true
+      caciottacore.bag.rows.max: true
+  caciottacore.bag.use:
+    description: Permette di aprire il proprio zaino personale con /bag.
+    default: true
+  caciottacore.bag.admin:
+    description: Permette di ispezionare e gestire lo zaino di altri giocatori con /bag <giocatore>.
+    default: op
+  caciottacore.bag.rows.max:
+    description: Permette di avere la capienza massima dello zaino (6 righe / 54 slot).
+    default: op
+
+

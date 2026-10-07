@@ -1,0 +1,118 @@
+# ========================================================
+#             CaciottaCore - Configurazione Rank
+# ========================================================
+
+# Formattazione della chat con rank
+chat:
+  enabled: true
+  # Placeholder disponibili:
+  #   {prefix}     - Prefisso del rank (es. &c[Admin] )
+  #   {player}     - Nome del giocatore
+  #   {suffix}     - Suffisso del rank
+  #   {rank}       - Display name del rank
+  #   {chat_color} - Colore del messaggio definito nel rank
+  #   {message}    - Testo del messaggio scritto
+  format: "{prefix}{player}{suffix}&8 » {chat_color}{message}"
+
+# Visualizzazione e ordinamento nella tablist
+tablist:
+  enabled: true
+  # Formato del nome giocatore visualizzato in tablist
+  format: "{prefix}{player}{suffix}"
+
+# Definizione dei rank del server.
+# Il parametro 'weight' determina la gerarchia (peso più alto = rank più importante,
+# posizionato in alto nella tablist).
+ranks:
+  owner:
+    display-name: "&4&lOWNER"
+    prefix: "&4[Owner] &r"
+    suffix: ""
+    chat-color: "&f"
+    weight: 100
+    default: false
+    max-homes: 100
+    permissions:
+      - "caciottacore.*"
+      - "*"
+
+  admin:
+    display-name: "&c&lADMIN"
+    prefix: "&c[Admin] &r"
+    suffix: ""
+    chat-color: "&f"
+    weight: 80
+    default: false
+    max-homes: 50
+    permissions:
+      - "caciottacore.*"
+      - "caciottacore.admin"
+      - "caciottacore.rank.admin"
+
+  mod:
+    display-name: "&6&lMOD"
+    prefix: "&6[Mod] &r"
+    suffix: ""
+    chat-color: "&f"
+    weight: 60
+    default: false
+    max-homes: 20
+    permissions:
+      - "caciottacore.home.*"
+      - "caciottacore.tpa.*"
+      - "caciottacore.scoreboard.*"
+      - "caciottacore.chat.color"
+
+  helper:
+    display-name: "&e&lHELPER"
+    prefix: "&e[Helper] &r"
+    suffix: ""
+    chat-color: "&f"
+    weight: 40
+    default: false
+    max-homes: 10
+    permissions:
+      - "caciottacore.home.*"
+      - "caciottacore.tpa.*"
+      - "caciottacore.scoreboard.*"
+      - "caciottacore.chat.color"
+
+  vip+:
+    display-name: "&b&lVIP+"
+    prefix: "&b[VIP+] &r"
+    suffix: ""
+    chat-color: "&f"
+    weight: 25
+    default: false
+    max-homes: 8
+    permissions:
+      - "caciottacore.home.bypasscooldown"
+      - "caciottacore.tpa.bypasscooldown"
+      - "caciottacore.chat.color"
+
+  vip:
+    display-name: "&a&lVIP"
+    prefix: "&a[VIP] &r"
+    suffix: ""
+    chat-color: "&f"
+    weight: 20
+    default: false
+    max-homes: 5
+    permissions:
+      - "caciottacore.chat.color"
+
+  utente:
+    display-name: "&7Utente"
+    prefix: "&7[Utente] &r"
+    suffix: ""
+    chat-color: "&7"
+    weight: 1
+    default: true
+    max-homes: 3
+    permissions:
+      - "caciottacore.home.use"
+      - "caciottacore.home.set"
+      - "caciottacore.home.delete"
+      - "caciottacore.home.list"
+      - "caciottacore.tpa.use"
+      - "caciottacore.scoreboard.use"
