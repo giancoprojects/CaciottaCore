@@ -50,7 +50,7 @@ public class SleepListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBedLeave(PlayerBedLeaveEvent event) {
-        sleepManager.wakeUp(event.getPlayer(), true);
+        sleepManager.wakeUp(event.getPlayer(), true, false);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

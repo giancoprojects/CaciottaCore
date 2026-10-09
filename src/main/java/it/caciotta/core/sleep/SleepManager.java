@@ -52,6 +52,9 @@ public class SleepManager {
     // Task attivi di salto notte per ciascun mondo
     private final Map<UUID, BukkitTask> nightSkipTasks = new ConcurrentHashMap<>();
 
+    // Set di blocco per prevenire ricorsioni infinite / StackOverflow su PlayerBedLeaveEvent
+    private final Set<UUID> wakingUp = ConcurrentHashMap.newKeySet();
+
     // Task periodico di controllo orario vanilla
     private BukkitTask timeCheckTask;
 
@@ -284,7 +287,9 @@ public class SleepManager {
      */
     public void handleSleepSuccess(Player player) {
         UUID uuid = player.getUniqueId();
-        sleepingPlayers.add(uuid);
+        if (!sleepingPlayers.add(uuid)) {
+            return; // Già registrato, evita annunci ed esecuzioni duplicate
+        }
 
         // Resetta la statistica dei Phantom se abilitato
         if (configManager.isSleepResetPhantom()) {
@@ -341,40 +346,59 @@ public class SleepManager {
      * Sveglia un giocatore e pulisce le entita associate.
      */
     public void wakeUp(Player player, boolean notifyWorld) {
+        wakeUp(player, notifyWorld, true);
+    }
+
+    /**
+     * Sveglia un giocatore e pulisce le entita associate con protezione da StackOverflow.
+     *
+     * @param wakeupVanillaBed se true, invoca player.wakeup() sul letto vanilla.
+     *                         Passare false quando invocato all'interno di PlayerBedLeaveEvent.
+     */
+    public void wakeUp(Player player, boolean notifyWorld, boolean wakeupVanillaBed) {
         if (player == null) return;
         UUID uuid = player.getUniqueId();
 
-        boolean wasSleeping = sleepingPlayers.remove(uuid);
-        ArmorStand stand = sleepEntities.remove(uuid);
-        Location preLoc = preSleepLocations.remove(uuid);
-
-        if (stand != null && stand.isValid()) {
-            stand.eject();
-            stand.remove();
+        // Evita ricorsione infinita se l'evento bed leave scatena altri wakeup
+        if (!wakingUp.add(uuid)) {
+            return;
         }
 
-        if (player.isSleeping()) {
-            player.wakeup(false);
-        }
+        try {
+            boolean wasSleeping = sleepingPlayers.remove(uuid);
+            ArmorStand stand = sleepEntities.remove(uuid);
+            Location preLoc = preSleepLocations.remove(uuid);
 
-        if (preLoc != null && player.isOnline() && !player.isDead()) {
-            Location safeLoc = preLoc.clone().add(0, 0.1, 0);
-            player.teleportAsync(safeLoc);
-        }
-
-        if (wasSleeping && notifyWorld && player.isOnline()) {
-            World world = player.getWorld();
-            int sleeping = getSleepingCount(world);
-            if (sleeping == 0) {
-                cancelNightSkip(world);
+            if (stand != null && stand.isValid()) {
+                stand.eject();
+                stand.remove();
             }
 
-            String wokeMsg = configManager.getPrefixedMessage("sleep.player-woke-up", Map.of("player", player.getName()));
-            for (Player p : world.getPlayers()) {
-                if (!p.equals(player)) {
-                    MessageUtil.sendMessage(p, wokeMsg);
+            if (wakeupVanillaBed && player.isSleeping()) {
+                player.wakeup(false);
+            }
+
+            if (preLoc != null && player.isOnline() && !player.isDead()) {
+                Location safeLoc = preLoc.clone().add(0, 0.1, 0);
+                player.teleportAsync(safeLoc);
+            }
+
+            if (wasSleeping && notifyWorld && player.isOnline()) {
+                World world = player.getWorld();
+                int sleeping = getSleepingCount(world);
+                if (sleeping == 0) {
+                    cancelNightSkip(world);
+                }
+
+                String wokeMsg = configManager.getPrefixedMessage("sleep.player-woke-up", Map.of("player", player.getName()));
+                for (Player p : world.getPlayers()) {
+                    if (!p.equals(player)) {
+                        MessageUtil.sendMessage(p, wokeMsg);
+                    }
                 }
             }
+        } finally {
+            wakingUp.remove(uuid);
         }
     }
 
