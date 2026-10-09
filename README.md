@@ -10,6 +10,8 @@
 7. **Sistema Ritorno Morte (/tpback)**: teletrasporto al punto della propria ultima morte consentito solo entro 30 secondi e per un massimo di 3 volte al giorno (con contatore giornaliero persistente), notifica cliccabile alla morte e supporto a conto alla rovescia, suoni e particelle.
 8. **Sistema Moderazione Completo**: gestione avanzata delle sanzioni staff con ban permanente (`/ban`), ban temporaneo (`/tempban`), revoca ban (`/unban`), espulsione immediata (`/kick`), mute permanente (`/mute`), mute temporaneo (`/tempmute`) e revoca mute (`/unmute`), con schermate personalizzate, blocco chat/messaggi privati e persistenza su `data/moderation.yml`.
 9. **Sistema Novità del Server (/news)**: libro interattivo (Book GUI nativo Paper/Adventure) con gli aggiornamenti e le novità del server, mostrato automaticamente al login/registrazione qualora vi siano novità configurate, e consultabile in qualsiasi momento con `/news`.
+10. **Sistema Sonno e Salto Notte (/sleep)**: comando per dormire con o senza letto (anche a terra sul posto), rispetto dell'orario vanilla (notte e temporali), annuncio globale in chat all'arrivo dell'ora con invito interattivo e pulsante cliccabile, passaggio automatico della notte e reset della statistica Phantom.
+11. **Sistema AFK (/afk)**: passaggio in modalità Spettatore, blocco totale di qualsiasi tipo di azione (chat, comandi, interazioni, teletrasporti spectator) e ripristino istantaneo della gamemode e della posizione al minimo movimento con la tastiera.
 
 ---
 
@@ -170,6 +172,8 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
 
 ---
 
+---
+
 ### 🪑 Sistema Seduta (Sit)
 | Comando | Descrizione | Permesso | Default |
 |---|---|---|---|
@@ -178,6 +182,39 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
 - **Sedersi sulle sedie**: cliccando con il tasto destro su scale (`Stairs`) o gradini (`Slabs`) con la mano vuota, il giocatore si siede automaticamente rivolto nella direzione dello schienale della sedia.
 - **Alzarsi**: premendo il tasto sneak (`Shift`) o digitando nuovamente `/sit`, il giocatore si alza in sicurezza senza incastrarsi nei blocchi.
 - Pulizia automatica: le sedie temporanee non vengono mai salvate nei file del mondo (`setPersistent(false)`) e vengono rimosse all'uscita dal server, alla morte o al teletrasporto.
+
+---
+
+### 🌙 Sistema Sonno (Sleep)
+| Comando | Descrizione | Permesso | Default |
+|---|---|---|---|
+| `/sleep` (o `/dormi`) | Mettiti a dormire sul posto o nel letto per passare la notte | `caciottacore.sleep.use` | **Tutti** |
+| `/sleep status` | Visualizza l'ora attuale del mondo e i giocatori che stanno dormendo | `caciottacore.sleep.use` | **Tutti** |
+| `/sleep reload` | Ricarica le configurazioni e il ciclo del sonno | `caciottacore.sleep.admin` | Solo OP |
+
+- **Dormire anche senza letto**: se non c'è un letto nelle vicinanze, il comando posiziona il giocatore a riposare direttamente sul terreno in tutta sicurezza con animazione e feedback Actionbar.
+- **Rispetto dell'orario vanilla**: il sonno è consentito esclusivamente nelle ore notturne (tick 12542-23460, ovvero dalle 18:30 circa) o in caso di temporale (`world.isThundering()`).
+- **Annuncio Globale Interattivo**: non appena scatta l'ora per andare a dormire (o inizia un temporale), viene inviato un annuncio in chat globale a tutti i giocatori con un **pulsante interattivo cliccabile** `[CLICCA QUI PER DORMIRE]` per eseguire immediatamente `/sleep`.
+- **Passaggio della Notte**: configurabile (predefinito a 1 giocatore con conto alla rovescia di 4 secondi) per far avanzare l'ora del mondo al nuovo mattino e ripulire il maltempo.
+- **Protezione Phantom**: all'avvio del sonno o al salto della notte viene azzerata la statistica `TIME_SINCE_REST`, impedendo lo spawn dei Phantom.
+- **Svegliarsi**: è sufficiente premere il tasto sneak (`Shift`) o digitare di nuovo `/sleep` per alzarsi in qualsiasi momento.
+
+---
+
+### 💤 Sistema AFK
+| Comando | Descrizione | Permesso | Default |
+|---|---|---|---|
+| `/afk` (o `/away`) | Entra o esci dalla modalità AFK (Spettatore) | `caciottacore.afk.use` | **Tutti** |
+| `/afk list` | Visualizza tutti i giocatori attualmente in AFK e da quanto tempo | `caciottacore.afk.use` | **Tutti** |
+| `/afk <giocatore>` | Imposta o revoca lo stato AFK di un altro giocatore | `caciottacore.afk.admin` | Solo OP |
+| `/afk reload` | Ricarica la configurazione del sistema AFK | `caciottacore.afk.admin` | Solo OP |
+
+- **Modalità Spettatore protetta**: all'attivazione il giocatore entra in modalità `SPECTATOR`, preservando la gamemode e la posizione esatta originaria.
+- **Titolo fisso a schermo intero**: durante l'AFK viene proiettato permanentemente a schermo il titolo `SEI AFK` con sottotitolo `Una piccola pausa ci vuole` (rimosso istantaneamente all'uscita).
+- **Suffisso nella Tablist**: nella lista tab dei giocatori connessi viene aggiunto un elegante suffisso `[AFK]` accanto al nome del giocatore, che si rimuove automaticamente non appena torna attivo.
+- **Blocco totale delle azioni**: mentre si è in AFK è impedito qualsiasi tipo di azione: scrittura in chat, esecuzione comandi (eccetto `/afk`), interazione con blocchi o entità, drop o raccolta oggetti e teletrasporti verso giocatori.
+- **Uscita istantanea al movimento tastiera**: al minimo movimento con la tastiera (input WASD, salto o sneak con spostamento coordinate), il movimento viene annullato e il giocatore viene immediatamente rimosso dall'AFK, ripristinando la sua gamemode precedente e riportandolo alla posizione originaria.
+- **Disconnessione sicura**: se il giocatore si disconnette mentre è in AFK, il suo stato viene ripristinato prima del salvataggio del profilo, evitando che rientri in modalità spettatore.
 
 ---
 
@@ -253,6 +290,8 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
   - Sistema Moderazione: Ricarica archivio sanzioni, ban e mute attivi (`data/moderation.yml`).
   - Sistema News: Ricarica pagine e configurazione del libro delle novità.
   - Sistema Bag: Salvataggio e ricarica cache degli inventari degli zaini.
+  - Sistema Sleep: Ricarica task del ciclo orario notturno, annunci e impostazioni di salto notte.
+  - Sistema AFK: Ripristino gamemode e ricarica impostazioni modulo AFK.
 
 ---
 

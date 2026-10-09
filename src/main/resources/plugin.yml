@@ -101,6 +101,16 @@ commands:
     usage: /sit
     aliases: [siediti, chair]
     permission: caciottacore.sit
+  sleep:
+    description: Mettiti a dormire per far passare la notte (con o senza letto).
+    usage: /sleep [status|reload]
+    aliases: [dormi]
+    permission: caciottacore.sleep.use
+  afk:
+    description: Entra o esci dalla modalita AFK (Spettatore).
+    usage: /afk [list|reload|<giocatore>]
+    aliases: [away]
+    permission: caciottacore.afk.use
   broadcast:
     description: Invia un annuncio a tutti i giocatori del server.
     usage: /broadcast <messaggio>
@@ -306,6 +316,30 @@ permissions:
   caciottacore.sit:
     description: Permette di usare il comando /sit e sedersi sui blocchi.
     default: true
+  caciottacore.sleep.*:
+    description: Accesso completo a tutte le funzionalita del sistema sonno.
+    default: op
+    children:
+      caciottacore.sleep.use: true
+      caciottacore.sleep.admin: true
+  caciottacore.sleep.use:
+    description: Permette di usare il comando /sleep per dormire e riposare.
+    default: true
+  caciottacore.sleep.admin:
+    description: Permette di visualizzare lo stato e ricaricare il modulo sonno.
+    default: op
+  caciottacore.afk.*:
+    description: Accesso completo a tutte le funzionalita del sistema AFK.
+    default: op
+    children:
+      caciottacore.afk.use: true
+      caciottacore.afk.admin: true
+  caciottacore.afk.use:
+    description: Permette di usare il comando /afk per entrare o uscire dalla modalita spettatore.
+    default: true
+  caciottacore.afk.admin:
+    description: Permette di gestire lo stato AFK di altri giocatori, vedere la lista o ricaricare il modulo.
+    default: op
   caciottacore.broadcast:
     description: Permette di usare il comando /broadcast per inviare annunci globali.
     default: op

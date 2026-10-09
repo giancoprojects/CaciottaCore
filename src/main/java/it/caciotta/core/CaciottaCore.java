@@ -1,5 +1,6 @@
 package it.caciotta.core;
 
+import it.caciotta.core.afk.*;
 import it.caciotta.core.auth.*;
 import it.caciotta.core.bag.*;
 import it.caciotta.core.broadcast.*;
@@ -12,6 +13,7 @@ import it.caciotta.core.moderation.*;
 import it.caciotta.core.news.*;
 import it.caciotta.core.scoreboard.*;
 import it.caciotta.core.sit.*;
+import it.caciotta.core.sleep.*;
 import it.caciotta.core.tpa.*;
 import it.caciotta.core.tpback.*;
 import it.caciotta.core.warp.*;
@@ -40,6 +42,8 @@ public final class CaciottaCore extends JavaPlugin {
     private NewsManager newsManager;
     private BagManager bagManager;
     private ScoreboardManager scoreboardManager;
+    private SleepManager sleepManager;
+    private AfkManager afkManager;
 
     public static CaciottaCore getInstance() {
         return instance;
@@ -64,6 +68,8 @@ public final class CaciottaCore extends JavaPlugin {
         this.tpBackManager = new TpBackManager(this);
         this.moderationManager = new ModerationManager(this);
         this.scoreboardManager = new ScoreboardManager(this);
+        this.sleepManager = new SleepManager(this);
+        this.afkManager = new AfkManager(this);
 
         // Registrazione Eventi
         PluginManager pm = getServer().getPluginManager();
@@ -77,6 +83,8 @@ public final class CaciottaCore extends JavaPlugin {
         pm.registerEvents(new ModerationListener(this), this);
         pm.registerEvents(new ScoreboardListener(this), this);
         pm.registerEvents(new BagListener(this), this);
+        pm.registerEvents(new SleepListener(this), this);
+        pm.registerEvents(new AfkListener(this), this);
 
         // Registrazione Comandi Auth
         registerCommand("register", new RegisterCommand(this));
@@ -259,6 +267,22 @@ public final class CaciottaCore extends JavaPlugin {
             sitCmd.setTabCompleter(sitCommand);
         }
 
+        // Registrazione Comando Sleep
+        SleepCommand sleepCommand = new SleepCommand(this);
+        PluginCommand sleepCmd = getCommand("sleep");
+        if (sleepCmd != null) {
+            sleepCmd.setExecutor(sleepCommand);
+            sleepCmd.setTabCompleter(sleepCommand);
+        }
+
+        // Registrazione Comando AFK
+        AfkCommand afkCommand = new AfkCommand(this);
+        PluginCommand afkCmd = getCommand("afk");
+        if (afkCmd != null) {
+            afkCmd.setExecutor(afkCommand);
+            afkCmd.setTabCompleter(afkCommand);
+        }
+
         // Registrazione Comando Broadcast
         BroadcastCommand broadcastCommand = new BroadcastCommand(this);
         PluginCommand bcCmd = getCommand("broadcast");
@@ -338,6 +362,12 @@ public final class CaciottaCore extends JavaPlugin {
         if (bagManager != null) {
             bagManager.reload();
         }
+        if (sleepManager != null) {
+            sleepManager.reload();
+        }
+        if (afkManager != null) {
+            afkManager.reload();
+        }
         if (sitManager != null && configManager != null && !configManager.isSitEnabled()) {
             sitManager.cleanup();
         }
@@ -378,6 +408,12 @@ public final class CaciottaCore extends JavaPlugin {
         }
         if (bagManager != null) {
             bagManager.cleanup();
+        }
+        if (sleepManager != null) {
+            sleepManager.cleanup();
+        }
+        if (afkManager != null) {
+            afkManager.cleanup();
         }
         getLogger().info("CaciottaCore disabilitato con successo.");
     }
@@ -428,5 +464,13 @@ public final class CaciottaCore extends JavaPlugin {
 
     public ScoreboardManager getScoreboardManager() {
         return scoreboardManager;
+    }
+
+    public SleepManager getSleepManager() {
+        return sleepManager;
+    }
+
+    public AfkManager getAfkManager() {
+        return afkManager;
     }
 }

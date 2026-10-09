@@ -222,7 +222,42 @@ public class ConfigManager {
             Map.entry("bag.target-not-found", "&cGiocatore &e{target} &cnon trovato o mai entrato nel server."),
             Map.entry("bag.cannot-open-dead", "&cNon puoi aprire lo zaino mentre sei morto!"),
             Map.entry("bag.item-forbidden", "&cNon puoi inserire questo oggetto (&e{item}&c) nello zaino!"),
-            Map.entry("bag.disabled", "&cIl sistema dello zaino e attualmente disabilitato.")
+            Map.entry("bag.disabled", "&cIl sistema dello zaino e attualmente disabilitato."),
+
+            // Sleep
+            Map.entry("sleep.broadcast-night", "&6🌙 &eÈ calata la notte! &7Per passare la giornata bisogna riposare e dormire."),
+            Map.entry("sleep.broadcast-thunder", "&9⛈ &eIl cielo si e oscurato per un temporale! &7Per passare la giornata bisogna riposare e dormire."),
+            Map.entry("sleep.broadcast-button", "&e&l[CLICCA QUI PER DORMIRE]"),
+            Map.entry("sleep.broadcast-hover", "&aClicca per metterti a riposare (/sleep)!"),
+            Map.entry("sleep.sleep-start", "&aTi sei messo a riposare. Premi &eShift &aoppure digita &e/sleep &aper alzarti."),
+            Map.entry("sleep.wake-up", "&7Ti sei svegliato e alzato in piedi."),
+            Map.entry("sleep.not-night", "&cNon e ancora ora di dormire! Puoi farlo solo di notte (dalle 18:30) o durante un temporale."),
+            Map.entry("sleep.wrong-dimension", "&cPuoi dormire solo nell'Overworld!"),
+            Map.entry("sleep.already-vehicle", "&cSei gia all'interno di un veicolo o seduto! Alzati prima di dormire."),
+            Map.entry("sleep.cannot-sleep-liquid", "&cNon puoi dormire nell'acqua o nella lava!"),
+            Map.entry("sleep.cannot-sleep-air", "&cNon puoi dormire a mezz'aria o mentre sei in caduta!"),
+            Map.entry("sleep.monsters-nearby", "&cNon puoi riposare adesso: ci sono mostri ostili nelle vicinanze!"),
+            Map.entry("sleep.player-sleeping", " &8» &e{player} &aè andato a dormire! &7({sleeping}/{total})"),
+            Map.entry("sleep.player-woke-up", " &8» &e{player} &7si e svegliato."),
+            Map.entry("sleep.night-skipped", "&6☀️ &a&lBUONGIORNO! &eLa notte e passata e una nuova giornata ha inizio!"),
+            Map.entry("sleep.night-skip-countdown", "&eTutti riposano... Il giorno sorgera tra &6{seconds}s&e."),
+            Map.entry("sleep.actionbar-resting", "&7💤 Stai riposando... Premi &eShift &7per alzarti."),
+            Map.entry("sleep.disabled", "&cIl sistema del sonno e' attualmente disabilitato."),
+            Map.entry("sleep.reloaded", "&aConfigurazione del sonno ricaricata con successo!"),
+
+            // AFK
+            Map.entry("afk.enter", "&eSei ora in modalita AFK (Spettatore). Muoviti con la tastiera per uscire."),
+            Map.entry("afk.exit", "&aNon sei piu in AFK. Bentornato!"),
+            Map.entry("afk.broadcast-enter", " &8» &e{player} &7e' ora in AFK."),
+            Map.entry("afk.broadcast-exit", " &8» &e{player} &7non e' piu AFK."),
+            Map.entry("afk.blocked-action", "&cSei in modalita AFK! Muoviti con la tastiera per uscire prima di eseguire azioni."),
+            Map.entry("afk.cannot-afk-dead", "&cNon puoi andare in AFK mentre sei morto!"),
+            Map.entry("afk.target-not-found", "&cGiocatore &e{target} &cnon trovato o offline."),
+            Map.entry("afk.list-header", "&6=== Giocatori in AFK ({count}) ==="),
+            Map.entry("afk.list-empty", "&7Nessun giocatore e' attualmente in AFK."),
+            Map.entry("afk.list-entry", "&7- &e{player} &8(&7da {time}&8)"),
+            Map.entry("afk.disabled", "&cIl sistema AFK e' attualmente disabilitato."),
+            Map.entry("afk.reloaded", "&aConfigurazione del sistema AFK ricaricata con successo!")
     );
 
     public String getRawMessage(String path) {
@@ -520,6 +555,82 @@ public class ConfigManager {
 
     public boolean isBagDisallowShulkerBoxes() {
         return config.getBoolean("bag.disallow-shulker-boxes", false);
+    }
+
+    public boolean isSleepEnabled() {
+        return config.getBoolean("sleep.enabled", true);
+    }
+
+    public int getSleepStartTick() {
+        return config.getInt("sleep.start-tick", 12542);
+    }
+
+    public int getSleepEndTick() {
+        return config.getInt("sleep.end-tick", 23460);
+    }
+
+    public boolean isSleepBroadcastOnNight() {
+        return config.getBoolean("sleep.broadcast-on-night", true);
+    }
+
+    public boolean isSleepBroadcastOnThunder() {
+        return config.getBoolean("sleep.broadcast-on-thunder", true);
+    }
+
+    public boolean isSleepNightSkipEnabled() {
+        return config.getBoolean("sleep.night-skip-enabled", true);
+    }
+
+    public int getSleepNightSkipDelaySeconds() {
+        return config.getInt("sleep.night-skip-delay-seconds", 4);
+    }
+
+    public boolean isSleepSinglePlayer() {
+        return config.getBoolean("sleep.single-player-sleep", true);
+    }
+
+    public boolean isSleepResetPhantom() {
+        return config.getBoolean("sleep.reset-phantom-statistic", true);
+    }
+
+    public boolean isSleepClearWeather() {
+        return config.getBoolean("sleep.clear-weather-on-skip", true);
+    }
+
+    public boolean isSleepCheckMonsters() {
+        return config.getBoolean("sleep.check-monsters-nearby", true);
+    }
+
+    public int getSleepMonsterRadius() {
+        return config.getInt("sleep.monster-check-radius", 8);
+    }
+
+    public boolean isSleepPlaySound() {
+        return config.getBoolean("sleep.play-sound", true);
+    }
+
+    public boolean isAfkEnabled() {
+        return config.getBoolean("afk.enabled", true);
+    }
+
+    public boolean isAfkBroadcast() {
+        return config.getBoolean("afk.broadcast", true);
+    }
+
+    public boolean isAfkPlaySound() {
+        return config.getBoolean("afk.play-sound", true);
+    }
+
+    public String getAfkTitle() {
+        return config.getString("afk.title", "&c&lSEI AFK");
+    }
+
+    public String getAfkSubtitle() {
+        return config.getString("afk.subtitle", "&eUna piccola pausa ci vuole");
+    }
+
+    public String getAfkTabSuffix() {
+        return config.getString("afk.tab-suffix", " &7[&cAFK&7]");
     }
 }
 

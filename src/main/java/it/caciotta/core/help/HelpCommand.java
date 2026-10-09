@@ -68,7 +68,11 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
                 .append(createCategoryButton("News", "news"))
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
-                .append(createCategoryButton("Bag", "bag"));
+                .append(createCategoryButton("Bag", "bag"))
+                .append(Component.text(" ", NamedTextColor.DARK_GRAY))
+                .append(createCategoryButton("Sleep", "sleep"))
+                .append(Component.text(" ", NamedTextColor.DARK_GRAY))
+                .append(createCategoryButton("AFK", "afk"));
 
         if (isAdmin) {
             nav = nav.append(Component.text(" ", NamedTextColor.DARK_GRAY))
@@ -107,6 +111,8 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(Component.empty());
         sender.sendMessage(MessageUtil.format("&6🪑 Utilità & Scoreboard"));
         sender.sendMessage(createCmd("/sit", "Siediti sul blocco o alzati in piedi", "/sit", false));
+        sender.sendMessage(createCmd("/sleep", "Mettiti a dormire per far passare la notte", "/sleep", false));
+        sender.sendMessage(createCmd("/afk", "Entra in modalita AFK (Spettatore)", "/afk", false));
         sender.sendMessage(createCmd("/bag", "Apri il tuo zaino personale portatile", "/bag", false));
         sender.sendMessage(createCmd("/scoreboard", "Attiva o disattiva la tua scoreboard personale", "/scoreboard", false));
         sender.sendMessage(createCmd("/news", "Visualizza il libro con le novita recenti del server", "/news", false));
@@ -138,6 +144,8 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(createAdminCmd("/authadmin reload", "Ricarica il file config.yml", "/authadmin reload", false));
             sender.sendMessage(createAdminCmd("/sb reload", "Ricarica la scoreboard per tutti", "/sb reload", false));
             sender.sendMessage(createAdminCmd("/news reload", "Ricarica il libro delle novita", "/news reload", false));
+            sender.sendMessage(createAdminCmd("/sleep reload", "Ricarica il sistema del sonno", "/sleep reload", false));
+            sender.sendMessage(createAdminCmd("/afk <player>", "Imposta lo stato AFK di un utente", "/afk ", true));
             sender.sendMessage(createAdminCmd("/bag <player>", "Ispeziona e gestisci lo zaino di un giocatore", "/bag ", true));
             sender.sendMessage(createAdminCmd("/reload", "Ricarica tutte le configurazioni e moduli del plugin", "/reload", false));
         }
@@ -183,6 +191,27 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                 sender.sendMessage(createCmd("/sit", "Siediti nella posizione attuale o alzati", "/sit", false));
                 sender.sendMessage(MessageUtil.format("&7Suggerimento: puoi sederti anche cliccando con mano vuota su scale o gradini!"));
                 sender.sendMessage(MessageUtil.format("&7Per alzarti premi &eShift&7 oppure digita di nuovo &e/sit&7."));
+            }
+            case "sleep", "dormi", "sonno" -> {
+                sender.sendMessage(MessageUtil.format("&6🌙 Dettagli Sistema Sonno:"));
+                sender.sendMessage(createCmd("/sleep", "Mettiti a dormire (con o senza letto) per far passare la notte", "/sleep", false));
+                sender.sendMessage(createCmd("/sleep status", "Mostra orario del mondo e giocatori addormentati", "/sleep status", false));
+                if (isAdmin) {
+                    sender.sendMessage(createAdminCmd("/sleep reload", "Ricarica le impostazioni del ciclo del sonno", "/sleep reload", false));
+                }
+                sender.sendMessage(MessageUtil.format("&7All'arrivo della notte riceverai un avviso cliccabile in chat!"));
+                sender.sendMessage(MessageUtil.format("&7Puoi dormire anche senza letto a terra: premi &eShift &7per alzarti."));
+            }
+            case "afk", "away" -> {
+                sender.sendMessage(MessageUtil.format("&6💤 Dettagli Sistema AFK:"));
+                sender.sendMessage(createCmd("/afk", "Entra in modalita AFK (Spettatore) o esci", "/afk", false));
+                sender.sendMessage(createCmd("/afk list", "Visualizza l'elenco dei giocatori attualmente in AFK", "/afk list", false));
+                if (isAdmin) {
+                    sender.sendMessage(createAdminCmd("/afk <player>", "Attiva o disattiva l'AFK per un altro giocatore", "/afk ", true));
+                    sender.sendMessage(createAdminCmd("/afk reload", "Ricarica la configurazione del sistema AFK", "/afk reload", false));
+                }
+                sender.sendMessage(MessageUtil.format("&7Mentre sei in AFK sei in Spettatore e qualsiasi azione e' bloccata."));
+                sender.sendMessage(MessageUtil.format("&7Al minimo movimento con la tastiera uscirai automaticamente dall'AFK!"));
             }
             case "sb", "scoreboard" -> {
                 sender.sendMessage(MessageUtil.format("&6📊 Dettagli Scoreboard:"));
@@ -296,7 +325,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
             boolean isAdmin = sender.isOp() || sender.hasPermission("caciottacore.admin");
-            List<String> sections = new ArrayList<>(List.of("home", "warp", "tpa", "tpback", "sit", "sb", "rank", "news", "bag"));
+            List<String> sections = new ArrayList<>(List.of("home", "warp", "tpa", "tpback", "sit", "sleep", "afk", "sb", "rank", "news", "bag"));
             if (isAdmin) {
                 sections.add("admin");
                 sections.add("mod");

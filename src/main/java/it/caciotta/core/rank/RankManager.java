@@ -384,13 +384,24 @@ public class RankManager {
             return;
         }
 
+        String afkSuffix = "";
+        if (plugin.getAfkManager() != null && plugin.getAfkManager().isAfk(player)) {
+            afkSuffix = plugin.getConfigManager().getAfkTabSuffix();
+        }
+
         if (tablistEnabled) {
             String formatted = tablistFormat
                     .replace("{prefix}", rank.getPrefix())
                     .replace("{player}", player.getName())
-                    .replace("{suffix}", rank.getSuffix())
+                    .replace("{suffix}", rank.getSuffix() + afkSuffix)
                     .replace("{rank}", rank.getDisplayName());
             player.playerListName(MessageUtil.format(formatted));
+        } else {
+            if (!afkSuffix.isEmpty()) {
+                player.playerListName(MessageUtil.format("&f" + player.getName() + afkSuffix));
+            } else {
+                player.playerListName(null);
+            }
         }
 
         // Gestione team scoreboard per ordinare i giocatori in tab in base al peso (più alto = più in alto)

@@ -121,6 +121,55 @@ bag:
   disallow-shulker-boxes: false
 
 # ========================================================
+#                    SISTEMA SONNO (SLEEP)
+# ========================================================
+sleep:
+  # Abilita o disabilita il sistema del sonno personalizzato
+  enabled: true
+  # Tick di inizio notte in cui e consentito dormire (default vanilla: 12542, circa 18:30)
+  start-tick: 12542
+  # Tick di fine notte (default vanilla: 23460, circa 05:45)
+  end-tick: 23460
+  # Invia annuncio globale in chat con pulsante cliccabile all'inizio della notte
+  broadcast-on-night: true
+  # Invia annuncio globale in chat con pulsante cliccabile all'inizio di un temporale
+  broadcast-on-thunder: true
+  # Consente di passare la notte se uno o piu giocatori dormono
+  night-skip-enabled: true
+  # Secondi di attesa nel sonno prima di passare la notte
+  night-skip-delay-seconds: 4
+  # Se true, basta 1 solo giocatore che dorme per passare la notte
+  # Se false, richiede che tutti i giocatori online nell'Overworld dormano
+  single-player-sleep: false
+  # Resetta la statistica dei Phantom (tempo dall'ultimo riposo) quando si dorme
+  reset-phantom-statistic: true
+  # Pulisce la pioggia e il temporale al passaggio della notte
+  clear-weather-on-skip: true
+  # Controlla la presenza di mostri aggressivi nelle vicinanze prima di dormire
+  check-monsters-nearby: true
+  # Raggio di controllo dei mostri in blocchi (orizzontale)
+  monster-check-radius: 8
+  # Riproduci suoni al broadcast e al passaggio della notte
+  play-sound: true
+
+# ========================================================
+#                    SISTEMA AFK
+# ========================================================
+afk:
+  # Abilita o disabilita il comando /afk
+  enabled: true
+  # Invia annuncio globale in chat quando un giocatore entra o esce dall'AFK
+  broadcast: true
+  # Riproduci suoni all'entrata e all'uscita dall'AFK
+  play-sound: true
+  # Titolo fisso mostrato a schermo intero durante l'AFK
+  title: "&c&lSEI AFK"
+  # Sottotitolo mostrato sotto il titolo durante l'AFK
+  subtitle: "&eUna piccola pausa ci vuole"
+  # Suffisso mostrato nella lista tab (Tablist) per i giocatori in AFK
+  tab-suffix: " &7[&cAFK&7]"
+
+# ========================================================
 #                SISTEMA AUTENTICAZIONE
 # ========================================================
 auth:
@@ -448,6 +497,43 @@ messages:
     cannot-open-dead: "&cNon puoi aprire lo zaino mentre sei morto!"
     item-forbidden: "&cNon puoi inserire questo oggetto (&e{item}&c) nello zaino!"
     disabled: "&cIl sistema dello zaino e attualmente disabilitato."
+
+  sleep:
+    broadcast-night: "&6🌙 &eE' calata la notte! &7Per passare la giornata bisogna riposare e dormire."
+    broadcast-thunder: "&9⛈ &eIl cielo si e' oscurato per un temporale! &7Per passare la giornata bisogna riposare e dormire."
+    broadcast-button: "&e&l[CLICCA QUI PER DORMIRE]"
+    broadcast-hover: "&aClicca per metterti a riposare (/sleep)!"
+    sleep-start: "&aTi sei messo a riposare. Premi &eShift &aoppure digita &e/sleep &aper alzarti."
+    wake-up: "&7Ti sei svegliato e alzato in piedi."
+    not-night: "&cNon e' ancora ora di dormire! Puoi farlo solo di notte (dalle 18:30) o durante un temporale."
+    wrong-dimension: "&cPuoi dormire solo nell'Overworld!"
+    already-vehicle: "&cSei gia all'interno di un veicolo o seduto! Alzati prima di dormire."
+    cannot-sleep-liquid: "&cNon puoi dormire nell'acqua o nella lava!"
+    cannot-sleep-air: "&cNon puoi dormire a mezz'aria o mentre sei in caduta!"
+    monsters-nearby: "&cNon puoi riposare adesso: ci sono mostri ostili nelle vicinanze!"
+    player-sleeping: " &8» &e{player} &ae' andato a dormire! &7({sleeping}/{total})"
+    player-woke-up: " &8» &e{player} &7si e' svegliato."
+    night-skipped: "&6☀️&a&lBUONGIORNO! &eLa notte e' passata e una nuova giornata ha inizio!"
+    night-skip-countdown: "&eTutti riposano... Il giorno sorgera tra &6{seconds}s&e."
+    actionbar-resting: "&7💤 Stai riposando... Premi &eShift &7per alzarti."
+    disabled: "&cIl sistema del sonno e' attualmente disabilitato."
+    reloaded: "&aConfigurazione del sonno ricaricata con successo!"
+
+  afk:
+    enter: "&eSei ora in modalita AFK (Spettatore). Muoviti con la tastiera per uscire."
+    exit: "&aNon sei piu in AFK. Bentornato!"
+    broadcast-enter: " &8» &e{player} &7e' ora in AFK."
+    broadcast-exit: " &8» &e{player} &7non e' piu AFK."
+    blocked-action: "&cSei in modalita AFK! Muoviti con la tastiera per uscire prima di eseguire azioni."
+    cannot-afk-dead: "&cNon puoi andare in AFK mentre sei morto!"
+    target-not-found: "&cGiocatore &e{target} &cnon trovato o offline."
+    list-header: "&6=== Giocatori in AFK ({count}) ==="
+    list-empty: "&7Nessun giocatore e' attualmente in AFK."
+    list-entry: "&7- &e{player} &8(&7da {time}&8)"
+    disabled: "&cIl sistema AFK e' attualmente disabilitato."
+    reloaded: "&aConfigurazione del sistema AFK ricaricata con successo!"
+
+
 
 
 

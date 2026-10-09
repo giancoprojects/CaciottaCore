@@ -68,6 +68,8 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
         MessageUtil.sendMessage(sender, " &8» &emoderazione &7(Archivio sanzioni, ban e mute attivi)");
         MessageUtil.sendMessage(sender, " &8» &enews &7(Libro novita e aggiornamenti server)");
         MessageUtil.sendMessage(sender, " &8» &ebag &7(Zaini personali e cache inventari)");
+        MessageUtil.sendMessage(sender, " &8» &esleep &7(Ciclo notte, annuncio orario e riposo)");
+        MessageUtil.sendMessage(sender, " &8» &eafk &7(Modalita spettatore e protezione azioni)");
 
         return true;
     }
