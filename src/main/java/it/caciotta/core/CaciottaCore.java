@@ -14,6 +14,7 @@ import it.caciotta.core.news.*;
 import it.caciotta.core.scoreboard.*;
 import it.caciotta.core.sit.*;
 import it.caciotta.core.sleep.*;
+import it.caciotta.core.time.*;
 import it.caciotta.core.tpa.*;
 import it.caciotta.core.tpback.*;
 import it.caciotta.core.warp.*;
@@ -44,6 +45,7 @@ public final class CaciottaCore extends JavaPlugin {
     private ScoreboardManager scoreboardManager;
     private SleepManager sleepManager;
     private AfkManager afkManager;
+    private TimeManager timeManager;
 
     public static CaciottaCore getInstance() {
         return instance;
@@ -70,6 +72,7 @@ public final class CaciottaCore extends JavaPlugin {
         this.scoreboardManager = new ScoreboardManager(this);
         this.sleepManager = new SleepManager(this);
         this.afkManager = new AfkManager(this);
+        this.timeManager = new TimeManager(this);
 
         // Registrazione Eventi
         PluginManager pm = getServer().getPluginManager();
@@ -291,6 +294,14 @@ public final class CaciottaCore extends JavaPlugin {
             bcCmd.setTabCompleter(broadcastCommand);
         }
 
+        // Registrazione Comando Orario
+        OrarioCommand orarioCommand = new OrarioCommand(this);
+        PluginCommand orarioCmd = getCommand("orario");
+        if (orarioCmd != null) {
+            orarioCmd.setExecutor(orarioCommand);
+            orarioCmd.setTabCompleter(orarioCommand);
+        }
+
         // Registrazione Comando Aiuto
         HelpCommand helpCommand = new HelpCommand(this);
         PluginCommand helpCmd = getCommand("aiuto");
@@ -367,6 +378,9 @@ public final class CaciottaCore extends JavaPlugin {
         }
         if (afkManager != null) {
             afkManager.reload();
+        }
+        if (timeManager != null) {
+            timeManager.reload();
         }
         if (sitManager != null && configManager != null && !configManager.isSitEnabled()) {
             sitManager.cleanup();
@@ -472,5 +486,9 @@ public final class CaciottaCore extends JavaPlugin {
 
     public AfkManager getAfkManager() {
         return afkManager;
+    }
+
+    public TimeManager getTimeManager() {
+        return timeManager;
     }
 }

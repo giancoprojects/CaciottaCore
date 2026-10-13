@@ -2,10 +2,11 @@
 
 Questa guida contiene gli standard architetturali e le procedure obbligatorie per l'implementazione di nuovi comandi e moduli all'interno del plugin **CaciottaCore**.
 
-Tutti i nuovi comandi sviluppati nel progetto devono rispettare i tre pilastri fondamentali:
+Tutti i nuovi comandi sviluppati nel progetto devono rispettare i quattro pilastri fondamentali:
 1. **Messaggi di default in italiano** (centralizzati e configurabili tramite `ConfigManager` e `config.yml`).
 2. **Documentazione interattiva nel comando `/aiuto`** (con filtraggio visivo rigoroso tra comandi utente e admin).
 3. **Pieno supporto al ciclo di ricarica a caldo** (integrazione nel comando `/reload` del plugin).
+4. **Gestione centralizzata di date, orari e fuso orario** (utilizzo obbligatorio di `TimeManager` e `ConfigManager.getZoneId()` per sincronizzazione con il fuso italiano `Europe/Rome`).
 
 ---
 
@@ -22,7 +23,10 @@ Tutti i nuovi comandi sviluppati nel progetto devono rispettare i tre pilastri f
   - [3.1 Implementazione del metodo reload() nel Manager](#31-implementazione-del-metodo-reload-nel-manager)
   - [3.2 Hook nel metodo reloadPlugin() di CaciottaCore](#32-hook-nel-metodo-reloadplugin-di-caciottacore)
   - [3.3 Notifica di feedback in ReloadCommand](#33-notifica-di-feedback-in-reloadcommand)
-- [4. Workflow Completo: Checklist per un Nuovo Comando](#4-workflow-completo-checklist-per-un-nuovo-comando)
+- [4. Gestione Centralizzata di Date, Orari e Fuso Orario](#4-gestione-centralizzata-di-date-orari-e-fuso-orario)
+  - [4.1 Utilizzo di TimeManager](#41-utilizzo-di-timemanager)
+  - [4.2 Reset Giornalieri e Formattazione con ConfigManager](#42-reset-giornalieri-e-formattazione-con-configmanager)
+- [5. Workflow Completo: Checklist per un Nuovo Comando](#5-workflow-completo-checklist-per-un-nuovo-comando)
 
 ---
 
@@ -194,13 +198,56 @@ MessageUtil.sendMessage(sender, " &8» &eteleport &7(Destinazioni e cache posizi
 
 ---
 
-## 4. Workflow Completo: Checklist per un Nuovo Comando
+## 4. Gestione Centralizzata di Date, Orari e Fuso Orario
+
+Qualora un nuovo comando o modulo debba interagire con **data e ora correnti, scadenze, timer, formattazione timestamp o reset giornalieri** (es. contatori giornalieri di `/tpback`), **è obbligatorio fare affidamento al sistema centralizzato** del plugin basato su fuso orario italiano (`Europe/Rome`).
+
+> [!WARNING]
+> **Non utilizzare mai** chiamate native prive di fuso orario come `LocalDate.now()` o `LocalTime.now()`, né istanziare `SimpleDateFormat` senza configurare il `TimeZone`. Poiché i server possono risiedere su VPS o host con orario UTC o fusi orari esteri, l'assenza del fuso comporta desincronizzazioni con i giocatori italiani e reset giornalieri ad orari errati.
+
+### 4.1 Utilizzo di `TimeManager`
+Il plugin fornisce il gestore [TimeManager.java](file:///c:/Users/gian/Documents/CaciottaCore/src/main/java/it/caciotta/core/time/TimeManager.java), accessibile tramite `plugin.getTimeManager()`, già configurato con il fuso orario del server:
+
+```java
+TimeManager timeManager = plugin.getTimeManager();
+
+// Ottenere data e ora correnti nel fuso italiano
+ZonedDateTime now = timeManager.now();
+LocalDate today = timeManager.today();
+LocalTime time = timeManager.currentTime();
+
+// Stringhe formattate pronte per i messaggi o la scoreboard
+String dataStr = timeManager.getFormattedDate();       // Es: "13/10/2026"
+String oraStr = timeManager.getFormattedTime();         // Es: "20:55:00"
+String oraBreve = timeManager.getFormattedShortTime();  // Es: "20:55"
+String giorno = timeManager.getDayOfWeek();             // Es: "Martedì"
+
+// Formattare un timestamp epoch (millisecondi) in formato leggibile
+String dataFormattata = timeManager.formatTimestamp(System.currentTimeMillis());
+```
+
+### 4.2 Reset Giornalieri e Formattazione con `ConfigManager`
+Se il modulo gestisce logiche a basso livello (come reset a mezzanotte o persistenza YAML), ricava sempre il `ZoneId` configurato tramite `configManager.getZoneId()`:
+
+```java
+// Reset giornaliero (es. TpBackManager):
+String oggi = LocalDate.now(configManager.getZoneId()).toString();
+
+// Formattazione thread-safe di scadenze sanzioni (es. ModerationManager):
+String scadenza = Instant.ofEpochMilli(punishment.getExpiresAt())
+        .atZone(configManager.getZoneId())
+        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+```
+
+---
+
+## 5. Workflow Completo: Checklist per un Nuovo Comando
 
 Quando aggiungi un nuovo comando a CaciottaCore, segui rigorosamente questa sequenza:
 
 | Fase | File da Modificare | Azione Richiesta |
 |---|---|---|
-| **1. Logica** | `src/main/java/it/caciotta/core/<modulo>/MioCommand.java` | Crea la classe che implementa `CommandExecutor` e `TabCompleter`. |
+| **1. Logica** | `src/main/java/it/caciotta/core/<modulo>/MioCommand.java` | Crea la classe che implementa `CommandExecutor` e `TabCompleter`. Se gestisci orari o date, usa sempre `TimeManager` o `configManager.getZoneId()`. |
 | **2. Testi IT** | [config.yml](file:///c:/Users/gian/Documents/CaciottaCore/src/main/resources/config.yml) | Aggiungi tutte le chiavi dei messaggi in italiano sotto `messages.<modulo>`. |
 | **3. Fallback IT** | [ConfigManager.java](file:///c:/Users/gian/Documents/CaciottaCore/src/main/java/it/caciotta/core/config/ConfigManager.java) | Aggiungi i messaggi di fallback nella mappa `DEFAULT_MESSAGES`. |
 | **4. Manifest** | [plugin.yml](file:///c:/Users/gian/Documents/CaciottaCore/src/main/resources/plugin.yml) | Registra il comando (`description`, `usage`, `aliases`, `permission`) e dichiara i relativi nodi di permesso con i permessi figli. |
@@ -209,3 +256,4 @@ Quando aggiungi un nuovo comando a CaciottaCore, segui rigorosamente questa sequ
 | **7. Guida /aiuto** | [HelpCommand.java](file:///c:/Users/gian/Documents/CaciottaCore/src/main/java/it/caciotta/core/help/HelpCommand.java) | Documenta il comando nel menù generale e nella sezione apposita con filtro `if (isAdmin)` per i comandi riservati. |
 | **8. Readme** | [README.md](file:///c:/Users/gian/Documents/CaciottaCore/README.md) | Aggiorna la tabella comandi, permessi e descrizioni nella documentazione ufficiale. |
 | **9. Compilazione** | Shell Maven | Esegui `.\mvnw.cmd clean package` per verificare che non ci siano errori e aggiornare il JAR in `target/`. |
+

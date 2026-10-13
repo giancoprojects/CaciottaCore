@@ -12,6 +12,7 @@
 9. **Sistema Novità del Server (/news)**: libro interattivo (Book GUI nativo Paper/Adventure) con gli aggiornamenti e le novità del server, mostrato automaticamente al login/registrazione qualora vi siano novità configurate, e consultabile in qualsiasi momento con `/news`.
 10. **Sistema Sonno e Salto Notte (/sleep)**: comando per dormire con o senza letto (anche a terra sul posto), rispetto dell'orario vanilla (notte e temporali), annuncio globale in chat all'arrivo dell'ora con invito interattivo e pulsante cliccabile, passaggio automatico della notte e reset della statistica Phantom.
 11. **Sistema AFK (/afk)**: passaggio in modalità Spettatore, blocco totale di qualsiasi tipo di azione (chat, comandi, interazioni, teletrasporti spectator) e ripristino istantaneo della gamemode e della posizione al minimo movimento con la tastiera.
+12. **Sistema Orario e Fuso Orario Italiano (/orario)**: orario del server sincronizzato con il fuso orario italiano (`Europe/Rome`), consultabile con il comando `/orario` (alias `/ora`, `/time`, `/servertime`), e applicato coerentemente alla scoreboard (`{date}`, `{time}`, `{timezone}`), alle scadenze di moderazione e al reset di mezzanotte degli utilizzi giornalieri di `/tpback`.
 
 ---
 
@@ -84,7 +85,8 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
 - `{homes}` / `{max_homes}`: Numero di home salvate e massimo consentito
 - `{warps}`: Numero totale di warp disponibili sul server
 - `{status}`: Stato login (`Autenticato` / `Non Autenticato`)
-- `{date}` / `{time}`: Data (GG/MM/AAAA) e ora corrente (HH:mm)
+- `{date}` / `{time}`: Data (GG/MM/AAAA) e ora corrente (HH:mm) in fuso orario italiano
+- `{timezone}`: Identificativo del fuso orario attivo (es. `Europe/Rome`)
 
 ---
 
@@ -259,6 +261,18 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
 
 ---
 
+### ⏰ Sistema Orario del Server (Fuso Italiano)
+| Comando | Descrizione | Permesso | Default |
+|---|---|---|---|
+| `/orario` (o `/ora`, `/time`, `/servertime`) | Mostra la data e l'orario attuali sincronizzati con il fuso orario italiano | `caciottacore.orario.use` | **Tutti** |
+| `/orario reload` | Ricarica la configurazione del fuso orario da `config.yml` | `caciottacore.orario.admin` | Solo OP |
+
+- **Sincronizzazione orario italiano**: il fuso orario predefinito è configurato su `Europe/Rome` in `config.yml`.
+- **Formattazione data e ora**: include giorno della settimana in italiano, data (`GG/MM/AAAA`), orario (`HH:mm:ss`) e timezone.
+- **Integrazione globale**: influisce su tutta la logica del server, inclusa la scoreboard laterale, la visualizzazione di ban/sanzioni staff e il reset di mezzanotte per i limiti di `/tpback`.
+
+---
+
 ### 📖 Comando Guida e Aiuto
 | Comando | Descrizione | Permesso | Default |
 |---|---|---|---|
@@ -292,6 +306,7 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
   - Sistema Bag: Salvataggio e ricarica cache degli inventari degli zaini.
   - Sistema Sleep: Ricarica task del ciclo orario notturno, annunci e impostazioni di salto notte.
   - Sistema AFK: Ripristino gamemode e ricarica impostazioni modulo AFK.
+  - Sistema Orario: Ricarica e sincronizzazione del fuso orario italiano per scoreboard, orario e controlli giornalieri.
 
 ---
 

@@ -70,6 +70,7 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
         MessageUtil.sendMessage(sender, " &8» &ebag &7(Zaini personali e cache inventari)");
         MessageUtil.sendMessage(sender, " &8» &esleep &7(Ciclo notte, annuncio orario e riposo)");
         MessageUtil.sendMessage(sender, " &8» &eafk &7(Modalita spettatore e protezione azioni)");
+        MessageUtil.sendMessage(sender, " &8» &eorario &7(Fuso orario italiano e sincronizzazione data/ora)");
 
         return true;
     }

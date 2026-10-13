@@ -6,6 +6,13 @@
 prefix: "&8[&6Caciotta&eCore&8]&r "
 
 # ========================================================
+#              FUSO ORARIO DEL SERVER (TIMEZONE)
+# ========================================================
+# Fuso orario utilizzato per orari, data, scoreboard, moderazione e reset giornalieri.
+# Predefinito: "Europe/Rome" (Fuso orario italiano)
+timezone: "Europe/Rome"
+
+# ========================================================
 #                    SISTEMA HOME
 # ========================================================
 home:
@@ -532,6 +539,11 @@ messages:
     list-entry: "&7- &e{player} &8(&7da {time}&8)"
     disabled: "&cIl sistema AFK e' attualmente disabilitato."
     reloaded: "&aConfigurazione del sistema AFK ricaricata con successo!"
+
+  orario:
+    current-time: "&6⏰ Orario del Server &7({timezone}): &e{time} &7- &e{date} &8(&e{day_of_week}&8)"
+    reloaded: "&aConfigurazione dell'orario e del fuso orario ricaricata con successo!"
+
 
 
 

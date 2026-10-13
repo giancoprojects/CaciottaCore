@@ -331,8 +331,9 @@ public class ScoreboardManager {
             status = plugin.getAuthManager().isAuthenticated(player) ? "&aAutenticato" : "&cNon Autenticato";
         }
 
-        String date = LocalDate.now().format(DATE_FORMATTER);
-        String time = LocalTime.now().format(TIME_FORMATTER);
+        java.time.ZoneId zoneId = configManager.getZoneId();
+        String date = LocalDate.now(zoneId).format(DATE_FORMATTER);
+        String time = LocalTime.now(zoneId).format(TIME_FORMATTER);
 
         return text
                 .replace("{player}", player.getName())
@@ -364,7 +365,8 @@ public class ScoreboardManager {
                 .replace("{warps}", String.valueOf(warpsCount))
                 .replace("{status}", status)
                 .replace("{date}", date)
-                .replace("{time}", time);
+                .replace("{time}", time)
+                .replace("{timezone}", zoneId.getId());
     }
 
     /**

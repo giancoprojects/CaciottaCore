@@ -8,8 +8,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.logging.Level;
 
 /**
@@ -20,6 +22,7 @@ public class ConfigManager {
     private final CaciottaCore plugin;
     private FileConfiguration config;
     private String prefix;
+    private ZoneId zoneId = ZoneId.of("Europe/Rome");
 
     public ConfigManager(CaciottaCore plugin) {
         this.plugin = plugin;
@@ -83,10 +86,30 @@ public class ConfigManager {
         plugin.reloadConfig();
         this.config = plugin.getConfig();
         this.prefix = config.getString("prefix", "&8[&6Caciotta&eCore&8]&r ");
+
+        String tzName = config.getString("timezone", "Europe/Rome");
+        try {
+            this.zoneId = ZoneId.of(tzName);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Fuso orario non valido specificato in config.yml ('" + tzName + "'), utilizzo di fallback 'Europe/Rome'.");
+            this.zoneId = ZoneId.of("Europe/Rome");
+        }
     }
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public ZoneId getZoneId() {
+        return zoneId != null ? zoneId : ZoneId.of("Europe/Rome");
+    }
+
+    public TimeZone getTimeZone() {
+        return TimeZone.getTimeZone(getZoneId());
+    }
+
+    public String getTimeZoneName() {
+        return config.getString("timezone", "Europe/Rome");
     }
 
     private static final Map<String, String> DEFAULT_MESSAGES = Map.ofEntries(
@@ -257,7 +280,11 @@ public class ConfigManager {
             Map.entry("afk.list-empty", "&7Nessun giocatore e' attualmente in AFK."),
             Map.entry("afk.list-entry", "&7- &e{player} &8(&7da {time}&8)"),
             Map.entry("afk.disabled", "&cIl sistema AFK e' attualmente disabilitato."),
-            Map.entry("afk.reloaded", "&aConfigurazione del sistema AFK ricaricata con successo!")
+            Map.entry("afk.reloaded", "&aConfigurazione del sistema AFK ricaricata con successo!"),
+
+            // Orario
+            Map.entry("orario.current-time", "&6⏰ Orario del Server &7({timezone}): &e{time} &7- &e{date} &8(&e{day_of_week}&8)"),
+            Map.entry("orario.reloaded", "&aConfigurazione dell'orario e del fuso orario ricaricata con successo!")
     );
 
     public String getRawMessage(String path) {

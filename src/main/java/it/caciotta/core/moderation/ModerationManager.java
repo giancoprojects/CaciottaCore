@@ -12,7 +12,8 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -33,7 +34,7 @@ public class ModerationManager {
     private final Map<UUID, Punishment> activeMutes = new ConcurrentHashMap<>();
     private final Map<String, UUID> muteNameToId = new ConcurrentHashMap<>();
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     public ModerationManager(CaciottaCore plugin) {
         this.plugin = plugin;
@@ -194,7 +195,9 @@ public class ModerationManager {
 
     public String formatBanScreen(Punishment ban) {
         String template = configManager.getRawMessage("moderation.ban-screen");
-        String expireDate = ban.isPermanent() ? "Permanente" : DATE_FORMAT.format(new Date(ban.getExpiresAt()));
+        String expireDate = ban.isPermanent() ? "Permanente" : Instant.ofEpochMilli(ban.getExpiresAt())
+                .atZone(configManager.getZoneId())
+                .format(DATE_FORMAT);
         return template
                 .replace("{reason}", ban.getReason())
                 .replace("{staff}", ban.getStaffName())

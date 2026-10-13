@@ -94,7 +94,7 @@ public class TpBackManager {
      * Ritorna gli utilizzi odierni del giocatore.
      */
     public int getDailyUses(UUID uuid) {
-        String today = LocalDate.now().toString();
+        String today = LocalDate.now(configManager.getZoneId()).toString();
         DailyUsage usage = dailyUsages.get(uuid);
         if (usage == null || !today.equals(usage.getDate())) {
             return 0;
@@ -144,7 +144,7 @@ public class TpBackManager {
      * Incrementa il contatore giornaliero del giocatore e salva su disco.
      */
     public synchronized void incrementDailyUses(UUID uuid) {
-        String today = LocalDate.now().toString();
+        String today = LocalDate.now(configManager.getZoneId()).toString();
         dailyUsages.compute(uuid, (id, current) -> {
             if (current == null || !today.equals(current.getDate())) {
                 return new DailyUsage(today, 1);
@@ -288,7 +288,7 @@ public class TpBackManager {
             return;
         }
 
-        String today = LocalDate.now().toString();
+        String today = LocalDate.now(configManager.getZoneId()).toString();
         for (String key : section.getKeys(false)) {
             try {
                 UUID uuid = UUID.fromString(key);

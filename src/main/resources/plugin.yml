@@ -171,6 +171,11 @@ commands:
     usage: /bag [giocatore]
     aliases: [backpack, zaino, borsa]
     permission: caciottacore.bag.use
+  orario:
+    description: Visualizza la data e l'orario correnti del server sincronizzati con il fuso orario italiano.
+    usage: /orario [reload]
+    aliases: [ora, time, servertime]
+    permission: caciottacore.orario.use
 
 permissions:
   caciottacore.*:
@@ -189,6 +194,7 @@ permissions:
       caciottacore.tpback.*: true
       caciottacore.mod.*: true
       caciottacore.news.*: true
+      caciottacore.orario.*: true
       caciottacore.scoreboard.*: true
       caciottacore.help: true
   caciottacore.admin:
@@ -404,6 +410,18 @@ permissions:
     default: op
   caciottacore.bag.rows.max:
     description: Permette di avere la capienza massima dello zaino (6 righe / 54 slot).
+    default: op
+  caciottacore.orario.*:
+    description: Accesso completo a tutte le funzionalita dell'orario del server.
+    default: op
+    children:
+      caciottacore.orario.use: true
+      caciottacore.orario.admin: true
+  caciottacore.orario.use:
+    description: Permette di visualizzare la data e l'orario del server con /orario.
+    default: true
+  caciottacore.orario.admin:
+    description: Permette di ricaricare la configurazione del fuso orario con /orario reload.
     default: op
 
 

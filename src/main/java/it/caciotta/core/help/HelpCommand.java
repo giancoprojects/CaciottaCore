@@ -116,6 +116,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(createCmd("/bag", "Apri il tuo zaino personale portatile", "/bag", false));
         sender.sendMessage(createCmd("/scoreboard", "Attiva o disattiva la tua scoreboard personale", "/scoreboard", false));
         sender.sendMessage(createCmd("/news", "Visualizza il libro con le novita recenti del server", "/news", false));
+        sender.sendMessage(createCmd("/orario", "Visualizza la data e l'orario attuale del server", "/orario", false));
         sender.sendMessage(createCmd("/changepassword <vecchia> <nuova>", "Modifica la password del tuo account", "/changepassword ", true));
 
         // Sezione Rank
@@ -144,6 +145,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(createAdminCmd("/authadmin reload", "Ricarica il file config.yml", "/authadmin reload", false));
             sender.sendMessage(createAdminCmd("/sb reload", "Ricarica la scoreboard per tutti", "/sb reload", false));
             sender.sendMessage(createAdminCmd("/news reload", "Ricarica il libro delle novita", "/news reload", false));
+            sender.sendMessage(createAdminCmd("/orario reload", "Ricarica il fuso orario", "/orario reload", false));
             sender.sendMessage(createAdminCmd("/sleep reload", "Ricarica il sistema del sonno", "/sleep reload", false));
             sender.sendMessage(createAdminCmd("/afk <player>", "Imposta lo stato AFK di un utente", "/afk ", true));
             sender.sendMessage(createAdminCmd("/bag <player>", "Ispeziona e gestisci lo zaino di un giocatore", "/bag ", true));
@@ -282,6 +284,14 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                 }
                 sender.sendMessage(MessageUtil.format("&7Suggerimento: puoi espandere la capienza dello zaino (fino a 6 righe / 54 slot) tramite i gradi rank!"));
             }
+            case "orario", "ora", "time" -> {
+                sender.sendMessage(MessageUtil.format("&6⏰ Dettagli Comando Orario & Fuso Orario:"));
+                sender.sendMessage(createCmd("/orario", "Visualizza la data e l'orario attuale (fuso orario italiano)", "/orario", false));
+                if (isAdmin) {
+                    sender.sendMessage(createAdminCmd("/orario reload", "Ricarica la configurazione del fuso orario", "/orario reload", false));
+                }
+                sender.sendMessage(MessageUtil.format("&7Suggerimento: l'orario del plugin e' sincronizzato con il fuso &eEurope/Rome&7."));
+            }
             default -> {
                 sender.sendMessage(MessageUtil.format("&cSezione '&e" + section + "&c' non trovata."));
                 sender.sendMessage(MessageUtil.format("&7Usa &e/aiuto&7 per vedere l'elenco completo delle sezioni disponibili."));
@@ -325,7 +335,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
             boolean isAdmin = sender.isOp() || sender.hasPermission("caciottacore.admin");
-            List<String> sections = new ArrayList<>(List.of("home", "warp", "tpa", "tpback", "sit", "sleep", "afk", "sb", "rank", "news", "bag"));
+            List<String> sections = new ArrayList<>(List.of("home", "warp", "tpa", "tpback", "sit", "sleep", "afk", "sb", "rank", "news", "bag", "orario"));
             if (isAdmin) {
                 sections.add("admin");
                 sections.add("mod");
