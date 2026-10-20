@@ -1,0 +1,51 @@
+{event_name}: Nome dell'evento (es. Evento Scavatore).
+{event_status}: Stato formattato (In attesa, In corso, Terminato).
+{event_start}: Data e orario di avvio programmato.
+{event_target}: Quantità di blocchi da raggiungere (10.000).
+{event_participants}: Numero di giocatori confermati.
+
+{event_blocks_broken}: Blocchi distrutti totali.
+{event_placeholders_blocks}: Placeholder per blocchi totali.
+{event_top_1_name}: Nome del 1° classificato.
+{event_top_2_name}: Nome del 2° classificato.
+{event_top_3_name}: Nome del 3° classificato.
+{event_top_1_score}: Punteggio del 1° classificato.
+{event_top_2_score}: Punteggio del 2° classificato.
+{event_top_3_score}: Punteggio del 3° classificato.
+{event_player_progress}: Progresso personale del giocatore.
+{event_player_score}: Punteggio personale del giocatore.
+{event_player_rank}: Posizione personale in classifica (1°, 2°, 3°, ...).
+{event_timer}: Countdown automatico all'avvio o alla chiusura.
+
+#Scoreboard evento
+- '&7&m-------------------'
+  - '{event_name}'
+  - '&bPartecipanti: &a{event_participants}'
+  - '&bStato: {event_player_confirmed}'
+  - ''
+  - '&6&lPvP:'
+  - ' &8» &fKill: &a{kills} &7| &fMorti: &c{deaths}'
+  - ''
+  - '&6&lServer:'
+  - ' &8» &fOnline: &b{online}&7/&b{max_online}'
+  - ' &8» &fHome: &6{homes}&7/&6{max_homes}'
+  - ''
+  - '&eInfo evento: &c/evento'
+
+  #Scoreboard default
+
+  - '&7&m-------------------'
+  - '&a{time} | {date}'
+  - ''
+  - '&eUtente: &f{player}'
+  - '&eGrado: {rank}'
+  - ' &8» &7Pos: &a{x}&7, &a{y}&7, &a{z} &8(&e{direction_short}&8)'
+  - ''
+  - '&6&lPvP:'
+  - ' &8» &fKill: &a{kills} &7| &fMorti: &c{deaths}'
+  - ''
+  - '&6&lServer:'
+  - ' &8» &fOnline: &b{online}&7/&b{max_online}'
+  - ' &8» &fHome: &6{homes}&7/&6{max_homes}'
+  - ''
+  - '&eLista comandi: &c/aiuto'

@@ -203,7 +203,18 @@ public class ScoreboardManager {
             PlayerBoard board = activeBoards.computeIfAbsent(player.getUniqueId(), id ->
                     new PlayerBoard(player, title, configManager.isScoreboardShowNumbers()));
 
-            if (!isAnimated) {
+            boolean isEventRunning = plugin.getEventManager() != null && plugin.getEventManager().isEventRunning();
+            boolean useEventBoard = isEventRunning && configManager.isEventScoreboardEnabled();
+            if (useEventBoard && configManager.isEventScoreboardOnlyParticipants()) {
+                if (plugin.getEventManager().getCurrentEvent() != null &&
+                        !plugin.getEventManager().getCurrentEvent().isParticipant(player.getUniqueId())) {
+                    useEventBoard = false;
+                }
+            }
+
+            if (useEventBoard) {
+                board.updateTitle(configManager.getEventScoreboardTitle());
+            } else if (!isAnimated) {
                 board.updateTitle(title);
             }
             updatePlayerBoard(player, board);
@@ -226,7 +237,24 @@ public class ScoreboardManager {
     }
 
     private void updatePlayerBoard(Player player, PlayerBoard board) {
-        List<String> rawLines = configManager.getScoreboardLines();
+        boolean isEventRunning = plugin.getEventManager() != null && plugin.getEventManager().isEventRunning();
+        boolean useEventBoard = isEventRunning && configManager.isEventScoreboardEnabled();
+        if (useEventBoard && configManager.isEventScoreboardOnlyParticipants()) {
+            if (plugin.getEventManager().getCurrentEvent() != null &&
+                    !plugin.getEventManager().getCurrentEvent().isParticipant(player.getUniqueId())) {
+                useEventBoard = false;
+            }
+        }
+
+        if (useEventBoard) {
+            board.updateTitle(configManager.getEventScoreboardTitle());
+        }
+
+        List<String> rawLines = useEventBoard ? configManager.getEventScoreboardLines() : configManager.getScoreboardLines();
+        if (rawLines == null || rawLines.isEmpty()) {
+            rawLines = configManager.getScoreboardLines();
+        }
+
         List<String> parsedLines = new ArrayList<>(rawLines.size());
 
         for (String raw : rawLines) {
@@ -335,6 +363,29 @@ public class ScoreboardManager {
         String date = LocalDate.now(zoneId).format(DATE_FORMATTER);
         String time = LocalTime.now(zoneId).format(TIME_FORMATTER);
 
+        it.caciotta.core.event.EventManager em = plugin.getEventManager();
+        String eventName = em != null ? em.getEventName() : "Nessuno";
+        String eventStatus = em != null ? em.getEventStatus() : "&cInattivo";
+        String eventStart = em != null ? em.getEventStartFormatted() : "N/D";
+        String eventTarget = em != null ? em.getEventTargetFormatted() : "0";
+        String eventParticipants = em != null ? String.valueOf(em.getParticipantsCount()) : "0";
+        String eventPlayerScore = em != null ? String.format(Locale.ITALY, "%,d", em.getPlayerScore(player)) : "0";
+        String eventPlayerRemaining = em != null ? String.format(Locale.ITALY, "%,d", em.getPlayerRemaining(player)) : "0";
+        String eventPlayerPercent = em != null ? em.getPlayerPercent(player) : "0%";
+        String eventPlayerConfirmed = em != null ? em.getPlayerConfirmedStatus(player) : "&cNon Iscritto";
+        String eventTop1 = em != null ? em.getTopEntryFormatted(1) : "-";
+        String eventTop2 = em != null ? em.getTopEntryFormatted(2) : "-";
+        String eventTop3 = em != null ? em.getTopEntryFormatted(3) : "-";
+        String eventTop1Name = em != null ? em.getTopPlayerName(1) : "-";
+        String eventTop1Score = em != null ? em.getTopPlayerScore(1) : "0";
+        String eventTop2Name = em != null ? em.getTopPlayerName(2) : "-";
+        String eventTop2Score = em != null ? em.getTopPlayerScore(2) : "0";
+        String eventTop3Name = em != null ? em.getTopPlayerName(3) : "-";
+        String eventTop3Score = em != null ? em.getTopPlayerScore(3) : "0";
+        String eventBlocksBroken = em != null ? em.getTotalBlocksBrokenFormatted() : "0";
+        String eventPlayerRank = em != null ? em.getPlayerRankFormatted(player) : "&7N/D";
+        String eventTimer = em != null ? em.getEventTimerFormatted() : "&7N/D";
+
         return text
                 .replace("{player}", player.getName())
                 .replace("{name}", player.getName())
@@ -366,7 +417,32 @@ public class ScoreboardManager {
                 .replace("{status}", status)
                 .replace("{date}", date)
                 .replace("{time}", time)
-                .replace("{timezone}", zoneId.getId());
+                .replace("{timezone}", zoneId.getId())
+                .replace("{event_name}", eventName)
+                .replace("{event_status}", eventStatus)
+                .replace("{event_start}", eventStart)
+                .replace("{event_date}", eventStart)
+                .replace("{event_target}", eventTarget)
+                .replace("{event_participants}", eventParticipants)
+                .replace("{event_blocks}", eventPlayerScore)
+                .replace("{event_blocks_broken}", eventBlocksBroken)
+                .replace("{event_placeholders_blocks}", eventBlocksBroken)
+                .replace("{event_player_score}", eventPlayerScore)
+                .replace("{event_player_progress}", eventPlayerScore)
+                .replace("{event_player_rank}", eventPlayerRank)
+                .replace("{event_player_remaining}", eventPlayerRemaining)
+                .replace("{event_player_percent}", eventPlayerPercent)
+                .replace("{event_player_confirmed}", eventPlayerConfirmed)
+                .replace("{event_timer}", eventTimer)
+                .replace("{event_top_1}", eventTop1)
+                .replace("{event_top_2}", eventTop2)
+                .replace("{event_top_3}", eventTop3)
+                .replace("{event_top_1_name}", eventTop1Name)
+                .replace("{event_top_1_score}", eventTop1Score)
+                .replace("{event_top_2_name}", eventTop2Name)
+                .replace("{event_top_2_score}", eventTop2Score)
+                .replace("{event_top_3_name}", eventTop3Name)
+                .replace("{event_top_3_score}", eventTop3Score);
     }
 
     /**

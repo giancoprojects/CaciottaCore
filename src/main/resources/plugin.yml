@@ -131,6 +131,11 @@ commands:
     usage: /caciottacore [reload]
     aliases: [core]
     permission: caciottacore.admin
+  evento:
+    description: Partecipa e visualizza lo stato dell'evento a premi del server.
+    usage: /evento [partecipa|abbandona|top|info|dungeon]
+    aliases: [event, eventi]
+    permission: caciottacore.event.use
   ban:
     description: Banna permanentemente un giocatore dal server.
     usage: /ban <giocatore> [motivo]
@@ -204,6 +209,7 @@ permissions:
       caciottacore.mod.*: true
       caciottacore.broadcast: true
       caciottacore.reload: true
+      caciottacore.event.*: true
   caciottacore.home.*:
     description: Accesso a tutti i comandi e funzionalita home.
     default: op
@@ -422,6 +428,18 @@ permissions:
     default: true
   caciottacore.orario.admin:
     description: Permette di ricaricare la configurazione del fuso orario con /orario reload.
+    default: op
+  caciottacore.event.*:
+    description: Accesso completo a tutte le funzionalita degli eventi a premi.
+    default: op
+    children:
+      caciottacore.event.use: true
+      caciottacore.event.admin: true
+  caciottacore.event.use:
+    description: Permette di visualizzare e confermare la partecipazione agli eventi a premi.
+    default: true
+  caciottacore.event.admin:
+    description: Permette di forzare l'avvio, interrompere o espellere giocatori dagli eventi.
     default: op
 
 

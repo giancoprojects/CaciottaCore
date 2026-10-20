@@ -13,6 +13,7 @@
 10. **Sistema Sonno e Salto Notte (/sleep)**: comando per dormire con o senza letto (anche a terra sul posto), rispetto dell'orario vanilla (notte e temporali), annuncio globale in chat all'arrivo dell'ora con invito interattivo e pulsante cliccabile, passaggio automatico della notte e reset della statistica Phantom.
 11. **Sistema AFK (/afk)**: passaggio in modalità Spettatore, blocco totale di qualsiasi tipo di azione (chat, comandi, interazioni, teletrasporti spectator) e ripristino istantaneo della gamemode e della posizione al minimo movimento con la tastiera.
 12. **Sistema Orario e Fuso Orario Italiano (/orario)**: orario del server sincronizzato con il fuso orario italiano (`Europe/Rome`), consultabile con il comando `/orario` (alias `/ora`, `/time`, `/servertime`), e applicato coerentemente alla scoreboard (`{date}`, `{time}`, `{timezone}`), alle scadenze di moderazione e al reset di mezzanotte degli utilizzi giornalieri di `/tpback`.
+13. **Sistema Eventi a Premi (/evento)**: gestione di competizioni a premi per la community con data di inizio nel fuso italiano, obbiettivo target quantitativo (es. 10.000 blocchi per l'evento Scavatore), classifica in tempo reale, proclamazione automatica della Top 3 vincitori con ricompense speciali (Rank Scavatore con 15 home e vantaggi esclusivi, Fullset Netherite con enchant a sorpresa, Teletrasporto sicuro a dungeon inesplorati), obbligo di conferma partecipazione e supporto alla seconda scoreboard dinamica.
 
 ---
 
@@ -270,6 +271,35 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
 - **Sincronizzazione orario italiano**: il fuso orario predefinito è configurato su `Europe/Rome` in `config.yml`.
 - **Formattazione data e ora**: include giorno della settimana in italiano, data (`GG/MM/AAAA`), orario (`HH:mm:ss`) e timezone.
 - **Integrazione globale**: influisce su tutta la logica del server, inclusa la scoreboard laterale, la visualizzazione di ban/sanzioni staff e il reset di mezzanotte per i limiti di `/tpback`.
+
+---
+
+### 🏆 Sistema Eventi a Premi (/evento)
+| Comando | Descrizione | Permesso | Default |
+|---|---|---|---|
+| `/evento` | Panoramica dell'evento a premi, stato, obbiettivo e progresso personale | `caciottacore.event.use` | **Tutti** |
+| `/evento partecipa` | **Conferma obbligatoria della partecipazione** per far conteggiare le azioni | `caciottacore.event.use` | **Tutti** |
+| `/evento abbandona` | Ritiro volontario dalla partecipazione all'evento corrente | `caciottacore.event.use` | **Tutti** |
+| `/evento top` (o `/classifica`) | Visualizza la classifica dei migliori 10 partecipanti in tempo reale | `caciottacore.event.use` | **Tutti** |
+| `/evento info` | Regolamento completo, requisiti e dettagli dei premi per la Top 3 | `caciottacore.event.use` | **Tutti** |
+| `/evento dungeon` | Riscatta il teletrasporto sicuro a un dungeon/struttura inesplorata (premio 3° posto) | `caciottacore.event.use` | **Tutti** |
+| `/evento admin start [id]` | **Forza l'avvio immediato** dell'evento specificato o corrente | `caciottacore.event.admin` | Solo OP |
+| `/evento admin stop` | **Interrompe forzatamente** l'evento in corso | `caciottacore.event.admin` | Solo OP |
+| `/evento admin kick <player>` | **Espelle un giocatore dalla partecipazione** (sia prima che durante l'evento) | `caciottacore.event.admin` | Solo OP |
+| `/evento admin setprogress <p> <v>` | Imposta manualmente il punteggio o i blocchi scavati di un giocatore | `caciottacore.event.admin` | Solo OP |
+| `/evento admin reset` | Azzera tutti i progressi e i partecipanti dell'evento corrente | `caciottacore.event.admin` | Solo OP |
+| `/evento admin reload` | Ricarica la configurazione del file `events.yml` | `caciottacore.event.admin` | Solo OP |
+| `/evento admin giveprize <p> <premio>` | **Assegna manualmente il premio scelto dall'utente** a un vincitore | `caciottacore.event.admin` | Solo OP |
+
+- **Primo Evento: Scavatore**: obbiettivo di 10.000 blocchi scavati.
+- **Premi in palio per i vincitori della Top 3**:
+  - I premi **non sono vincolati alla posizione di arrivo e non vengono assegnati in automatico**.
+  - I primi 3 partecipanti che completano l'obbiettivo scelgono il premio preferito e l'amministratore lo assegna con `/evento admin giveprize <player> <rank|netherite|dungeon>`:
+    - 👑 **Rank Scavatore** con vantaggi esclusivi (15 Home, zaino portatile da 5 righe / 45 slot, chat colorata, `/tpback` illimitato senza limiti giornalieri e bypass tempo di attesa teletrasporti).
+    - 🛡️ **Fullset Netherite** con incantesimi a sorpresa di livello massimo (Protezione IV, Ripristino, Indistruttibilità III, Passo Rapido III, Caduta Morbida IV, ecc.).
+    - 🗺️ **Teletrasporto sicuro a strutture / dungeon inesplorate** (Trial Chambers / Ancient City) con pergamena riscattabile e protezioni temporanee all'atterraggio.
+- **Obbligo di conferma partecipazione**: se un utente non esegue `/evento partecipa` (o non clicca il pulsante in chat), i blocchi scavati non vengono conteggiati.
+- **Doppia Scoreboard Dinamica**: durante l'evento in corso la scoreboard si trasforma automaticamente mostrando blocchi distrutti e classifica del podio in tempo reale.
 
 ---
 

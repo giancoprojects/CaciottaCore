@@ -77,6 +77,28 @@ ranks:
       - "caciottacore.scoreboard.*"
       - "caciottacore.chat.color"
 
+  scavatore:
+    display-name: "&6&lSCAVATORE"
+    prefix: "&6[Scavatore] &r"
+    suffix: ""
+    chat-color: "&e"
+    weight: 30
+    default: false
+    max-homes: 15
+    permissions:
+      - "caciottacore.scavatore"
+      - "caciottacore.home.bypasscooldown"
+      - "caciottacore.tpa.bypasscooldown"
+      - "caciottacore.chat.color"
+      - "caciottacore.bag.rows.5"
+      - "caciottacore.tpback.unlimited"
+      - "caciottacore.home.use"
+      - "caciottacore.home.set"
+      - "caciottacore.home.delete"
+      - "caciottacore.home.list"
+      - "caciottacore.tpa.use"
+      - "caciottacore.scoreboard.use"
+
   vip+:
     display-name: "&b&lVIP+"
     prefix: "&b[VIP+] &r"

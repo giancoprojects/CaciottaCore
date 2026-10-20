@@ -255,6 +255,29 @@ scoreboard:
   #   {status}          - Stato autenticazione (&aAutenticato / &cNon Autenticato)
   #   {date}            - Data odierna (GG/MM/AAAA)
   #   {time}            - Ora attuale (HH:mm)
+  #   {event_name}      - Nome dell'evento a premi attivo o programmato
+  #   {event_status}    - Stato dell'evento (&eIn attesa, &aIn corso, &cTerminato)
+  #   {event_start}     - Data/ora di inizio programmata dell'evento
+  #   {event_target}    - Obbiettivo da raggiungere (es. 10.000)
+  #   {event_participants} - Numero di partecipanti confermati
+  #   {event_blocks_broken} - Blocchi distrutti totali da tutti i partecipanti
+  #   {event_placeholders_blocks} - Placeholder per blocchi totali
+  #   {event_top_1_name} - Nome del 1° classificato
+  #   {event_top_2_name} - Nome del 2° classificato
+  #   {event_top_3_name} - Nome del 3° classificato
+  #   {event_top_1_score} - Punteggio del 1° classificato
+  #   {event_top_2_score} - Punteggio del 2° classificato
+  #   {event_top_3_score} - Punteggio del 3° classificato
+  #   {event_top_1}     - Primo classificato formattato (Nome - Punteggio)
+  #   {event_top_2}     - Secondo classificato formattato
+  #   {event_top_3}     - Terzo classificato formattato
+  #   {event_player_progress} - Progresso personale del giocatore
+  #   {event_player_score} - Punteggio personale (blocchi scavati) del giocatore
+  #   {event_player_rank}  - Posizione personale in classifica (1°, 2°, 3°, ...)
+  #   {event_player_remaining} - Blocchi rimanenti al completamento
+  #   {event_player_percent}   - Percentuale di completamento dell'obbiettivo
+  #   {event_player_confirmed} - Stato conferma del giocatore (&aConfermato / &cNon Iscritto)
+  #   {event_timer}     - Countdown automatico all'avvio o alla chiusura (es. 01g 04h 30m o In corso)
   lines:
     - "&7&m-------------------"
     - "&eUtente: &f{player}"
@@ -271,6 +294,32 @@ scoreboard:
     - " &8» &fHome: &6{homes}&7/&6{max_homes}"
     - ""
     - "&emc.caciotta.it"
+
+  # Scoreboard speciale per gli eventi a premi (attiva in tempo reale durante un evento in corso)
+  event-scoreboard:
+    # Abilita la seconda scoreboard dinamica quando un evento a premi e in corso
+    enabled: true
+    # Titolo della scoreboard durante l'evento
+    title: "&6&lEVENTO &e&lSCAVATORE"
+    # Se true, mostra questa scoreboard solo ai giocatori che hanno confermato la partecipazione.
+    # Se false, la mostra a tutti i giocatori online durante l'evento.
+    only-participants: false
+    # Righe mostrate in tempo reale durante l'evento
+    lines:
+      - "&7&m-------------------"
+      - "&6&lEvento: &e{event_name}"
+      - "&7Obbiettivo: &a{event_target} blocchi"
+      - ""
+      - "&eIl tuo progresso:"
+      - " &8» &fScavati: &e{event_player_score}&7/&a{event_target}"
+      - " &8» &fStato: {event_player_confirmed}"
+      - ""
+      - "&6&lClassifica Podio:"
+      - " &8» &e1°: {event_top_1}"
+      - " &8» &f2°: {event_top_2}"
+      - " &8» &73°: {event_top_3}"
+      - ""
+      - "&emc.caciotta.it"
 
 # ========================================================
 #                    SISTEMA SIT
@@ -543,6 +592,40 @@ messages:
   orario:
     current-time: "&6⏰ Orario del Server &7({timezone}): &e{time} &7- &e{date} &8(&e{day_of_week}&8)"
     reloaded: "&aConfigurazione dell'orario e del fuso orario ricaricata con successo!"
+
+  event:
+    usage: "&cUso: &e/evento [partecipa|abbandona|top|info|dungeon]"
+    usage-admin: "&cUso Admin: &e/evento admin <start|stop|kick|setprogress|reset|reload|giveprize>"
+    no-event: "&cAl momento non ci sono eventi a premi attivi o programmati."
+    join-success: "&aHai confermato la tua partecipazione all'evento &e{event}&a! I tuoi blocchi scavati verranno conteggiati."
+    already-joined: "&eHai gia confermato la partecipazione a questo evento!"
+    leave-success: "&eTi sei ritirato dall'evento &6{event}&e. I tuoi progressi sono stati archiviati."
+    not-joined: "&cNon sei attualmente iscritto all'evento! Usa &e/evento partecipa &cper confermare la partecipazione."
+    not-running: "&cL'evento &e{event} &cnon e attualmente in corso! Stato: &e{status}&c."
+    already-running: "&cL'evento e gia in corso!"
+    join-broadcast-prompt: "&6🏆 &eUn nuovo evento a premi sta per iniziare: &6{event}&e!\n&7Obbiettivo: &a{target} blocchi scavati &8| &7Inizio: &e{start}\n&e&l[CLICCA QUI PER CONFERMARE LA PARTECIPAZIONE]"
+    join-broadcast-hover: "&aClicca per confermare la tua partecipazione all'evento!"
+    broadcast-start: "&6🏆 &eL'evento a premi &6&l{event} &eE' UFFICIALMENTE INIZIATO!\n&7Iscrizioni ancora aperte con &e/evento partecipa&7. Che vincano i migliori 3!"
+    broadcast-milestone: "&6⛏ &e{player} &7ha scavato &a{score}&7/{target} blocchi nell'evento &6{event}&7!"
+    broadcast-winner: "&6🏆 &e&lPODIO EVENTO! &e{player} &aha completato l'obbiettivo ed e arrivato &6&l{place}°&a!\n&7Comunica il premio che hai scelto a un membro dello staff per fartelo assegnare!"
+    broadcast-end: "&6🎉 &e&lEVENTO TERMINATO! &eTutti e 3 i posti del podio sono stati assegnati!\n&e1° Posto: &a{winner1}\n&e2° Posto: &b{winner2}\n&e3° Posto: &d{winner3}\n&7Complimenti a tutti i partecipanti! I vincitori possono scegliere il loro premio comunicandolo all'admin."
+    top-header: "&6🏆 &eClassifica Podio - &6{event} &7(Obbiettivo: &a{target}&7):"
+    top-entry: " &8» &e{rank}° &f{player} &8- &a{score} &7blocchi scavati {status}"
+    top-empty: "&7Nessun partecipante ha ancora registrato progressi per questo evento."
+    kicked-notify: "&cSei stato espulso dalla partecipazione all'evento da uno staffer."
+    admin-kicked: "&aGiocatore &e{target} &aespulso dalla partecipazione all'evento &e{event}&a."
+    admin-started: "&aEvento &e{event} &aavviato forzatamente con successo!"
+    admin-stopped: "&cEvento &e{event} &cinterrotto forzatamente dallo staff."
+    admin-progress-set: "&aProgresso di &e{target} &aimpostato a &e{score} &ablocchi."
+    admin-reset: "&eProgressi e partecipanti dell'evento &6{event} &eresettati con successo."
+    admin-reloaded: "&aConfigurazione eventi ricaricata con successo!"
+    admin-prize-given: "&aPremio &e{prize} &aassegnato con successo a &e{target}&a per l'evento &6{event}&a!"
+    admin-prize-unknown: "&cPremio sconosciuto: &e{prize}&c! Premi disponibili: &erank&c, &enetherite&c, &edungeon&c."
+    prize-received: "&6🎁 &aTi e stato assegnato il premio &e{prize}&a per il tuo piazzamento nell'evento &6{event}&a!"
+    dungeon-teleported: "&d✨ Ti sei teletrasportato vicino a una struttura inesplorata! Preparati all'esplorazione!"
+    dungeon-failed: "&cImpossibile trovare una struttura non esplorata nelle vicinanze. Riprova tra poco."
+    dungeon-no-item: "&cNon hai alcun teletrasporto dungeon da riscattare! Comunica la tua scelta a uno staffer per fartelo assegnare."
+
 
 
 

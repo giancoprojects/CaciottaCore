@@ -1,0 +1,58 @@
+# ========================================================
+#            CaciottaCore - Configurazione Eventi a Premi
+# ========================================================
+
+# Abilita o disabilita il sistema generale degli eventi
+enabled: true
+
+# Intervallo in secondi per il controllo della data di avvio automatico
+check-interval-seconds: 1
+
+# Permette ai giocatori di confermare la partecipazione anche dopo l'avvio dell'evento
+allow-join-during-event: true
+
+# Invia un messaggio globale in chat quando un partecipante raggiunge pietre miliari (es. ogni 2.500 blocchi)
+broadcast-milestones: true
+milestone-interval: 2500
+
+# ID dell'evento attualmente attivo o programmato
+active-event: "scavatore"
+
+# Lista di tutti gli eventi configurati sul server
+events:
+  scavatore:
+    # Nome visualizzato dell'evento (supporta codici colore &)
+    name: "&6&lEvento Scavatore"
+    
+    # Breve descrizione degli obbiettivi
+    description: "Scava 10.000 blocchi per aggiudicarti uno dei 3 posti sul podio!"
+    
+    # Tipo di obbiettivo supportato:
+    #   - BLOCK_BREAK (Scavo di blocchi)
+    #   - MOB_KILL    (Uccisione di mostri)
+    #   - FISH_CATCH  (Pesca di pesci e tesori)
+    #   - BLOCK_PLACE (Posizionamento blocchi)
+    #   - PLAYER_KILL (Uccisioni PvP)
+    type: "BLOCK_BREAK"
+    
+    # Quantita da raggiungere per completare l'evento
+    target: 10000
+    
+    # Data e ora di inizio dell'evento (formato: "dd/MM/yyyy HH:mm")
+    # Viene calcolata nel fuso orario impostato in config.yml ("Europe/Rome")
+    start-date: "25/10/2026 21:00"
+    
+    # Premi a scelta per i 3 vincitori che raggiungono l'obbiettivo
+    # I premi non sono vincolati alla posizione (1°, 2°, 3°) e non vengono dati in automatico:
+    # ciascun vincitore sceglie il suo premio preferito e l'admin glielo assegna con /evento admin giveprize <player> <premio>
+    prizes:
+      rank:
+        type: "RANK"
+        rank: "scavatore"
+        description: "&6Rank Scavatore &7(15 Home, zaino da 5 righe, chat colorata, tpback illimitato)"
+      netherite:
+        type: "NETHERITE_FULLSET"
+        description: "&5Fullset Netherite &7con incantesimi a sorpresa di livello massimo"
+      dungeon:
+        type: "DUNGEON_TELEPORT"
+        description: "&dTeletrasporto a strutture / dungeon inesplorate &7(Trial Chambers / Ancient City)"

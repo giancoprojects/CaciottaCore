@@ -284,7 +284,40 @@ public class ConfigManager {
 
             // Orario
             Map.entry("orario.current-time", "&6⏰ Orario del Server &7({timezone}): &e{time} &7- &e{date} &8(&e{day_of_week}&8)"),
-            Map.entry("orario.reloaded", "&aConfigurazione dell'orario e del fuso orario ricaricata con successo!")
+            Map.entry("orario.reloaded", "&aConfigurazione dell'orario e del fuso orario ricaricata con successo!"),
+
+            // Eventi a Premi
+            Map.entry("event.usage", "&cUso: &e/evento [partecipa|abbandona|top|info|dungeon]"),
+            Map.entry("event.usage-admin", "&cUso Admin: &e/evento admin <start|stop|kick|setprogress|reset|reload|giveprize>"),
+            Map.entry("event.no-event", "&cAl momento non ci sono eventi a premi attivi o programmati."),
+            Map.entry("event.join-success", "&aHai confermato la tua partecipazione all'evento &e{event}&a! I tuoi blocchi scavati verranno conteggiati."),
+            Map.entry("event.already-joined", "&eHai gia confermato la partecipazione a questo evento!"),
+            Map.entry("event.leave-success", "&eTi sei ritirato dall'evento &6{event}&e. I tuoi progressi sono stati archiviati."),
+            Map.entry("event.not-joined", "&cNon sei attualmente iscritto all'evento! Usa &e/evento partecipa &cper confermare la partecipazione."),
+            Map.entry("event.not-running", "&cL'evento &e{event} &cnon e attualmente in corso! Stato: &e{status}&c."),
+            Map.entry("event.already-running", "&cL'evento e gia in corso!"),
+            Map.entry("event.join-broadcast-prompt", "&6🏆 &eUn nuovo evento a premi sta per iniziare: &6{event}&e!\n&7Obbiettivo: &a{target} blocchi scavati &8| &7Inizio: &e{start}\n&e&l[CLICCA QUI PER CONFERMARE LA PARTECIPAZIONE]"),
+            Map.entry("event.join-broadcast-hover", "&aClicca per confermare la tua partecipazione all'evento!"),
+            Map.entry("event.broadcast-start", "&6🏆 &eL'evento a premi &6&l{event} &eE' UFFICIALMENTE INIZIATO!\n&7Iscrizioni ancora aperte con &e/evento partecipa&7. Che vincano i migliori 3!"),
+            Map.entry("event.broadcast-milestone", "&6⛏ &e{player} &7ha scavato &a{score}&7/{target} blocchi nell'evento &6{event}&7!"),
+            Map.entry("event.broadcast-winner", "&6🏆 &e&lPODIO EVENTO! &e{player} &aha completato l'obbiettivo ed e arrivato &6&l{place}°&a!\n&7Comunica il premio che hai scelto a un membro dello staff per fartelo assegnare!"),
+            Map.entry("event.broadcast-end", "&6🎉 &e&lEVENTO TERMINATO! &eTutti e 3 i posti del podio sono stati assegnati!\n&e1° Posto: &a{winner1}\n&e2° Posto: &b{winner2}\n&e3° Posto: &d{winner3}\n&7Complimenti a tutti i partecipanti! I vincitori possono scegliere il loro premio comunicandolo all'admin."),
+            Map.entry("event.top-header", "&6🏆 &eClassifica Podio - &6{event} &7(Obbiettivo: &a{target}&7):"),
+            Map.entry("event.top-entry", " &8» &e{rank}° &f{player} &8- &a{score} &7blocchi scavati {status}"),
+            Map.entry("event.top-empty", "&7Nessun partecipante ha ancora registrato progressi per questo evento."),
+            Map.entry("event.kicked-notify", "&cSei stato espulso dalla partecipazione all'evento da uno staffer."),
+            Map.entry("event.admin-kicked", "&aGiocatore &e{target} &aespulso dalla partecipazione all'evento &e{event}&a."),
+            Map.entry("event.admin-started", "&aEvento &e{event} &aavviato forzatamente con successo!"),
+            Map.entry("event.admin-stopped", "&cEvento &e{event} &cinterrotto forzatamente dallo staff."),
+            Map.entry("event.admin-progress-set", "&aProgresso di &e{target} &aimpostato a &e{score} &ablocchi."),
+            Map.entry("event.admin-reset", "&eProgressi e partecipanti dell'evento &6{event} &eresettati con successo."),
+            Map.entry("event.admin-reloaded", "&aConfigurazione eventi ricaricata con successo!"),
+            Map.entry("event.admin-prize-given", "&aPremio &e{prize} &aassegnato con successo a &e{target}&a per l'evento &6{event}&a!"),
+            Map.entry("event.admin-prize-unknown", "&cPremio sconosciuto: &e{prize}&c! Premi disponibili: &erank&c, &enetherite&c, &edungeon&c."),
+            Map.entry("event.prize-received", "&6🎁 &aTi e stato assegnato il premio &e{prize}&a per il tuo piazzamento nell'evento &6{event}&a!"),
+            Map.entry("event.dungeon-teleported", "&d✨ Ti sei teletrasportato vicino a una struttura inesplorata! Preparati all'esplorazione!"),
+            Map.entry("event.dungeon-failed", "&cImpossibile trovare una struttura non esplorata nelle vicinanze. Riprova tra poco."),
+            Map.entry("event.dungeon-no-item", "&cNon hai alcun teletrasporto dungeon da riscattare! Comunica la tua scelta a uno staffer per fartelo assegnare.")
     );
 
     public String getRawMessage(String path) {
@@ -426,6 +459,22 @@ public class ConfigManager {
 
     public java.util.List<String> getScoreboardLines() {
         return config.getStringList("scoreboard.lines");
+    }
+
+    public boolean isEventScoreboardEnabled() {
+        return config.getBoolean("scoreboard.event-scoreboard.enabled", true);
+    }
+
+    public String getEventScoreboardTitle() {
+        return config.getString("scoreboard.event-scoreboard.title", "&6&lEVENTO &e&lSCAVATORE");
+    }
+
+    public boolean isEventScoreboardOnlyParticipants() {
+        return config.getBoolean("scoreboard.event-scoreboard.only-participants", false);
+    }
+
+    public java.util.List<String> getEventScoreboardLines() {
+        return config.getStringList("scoreboard.event-scoreboard.lines");
     }
 
     public boolean isSitEnabled() {

@@ -72,7 +72,9 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
                 .append(createCategoryButton("Sleep", "sleep"))
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
-                .append(createCategoryButton("AFK", "afk"));
+                .append(createCategoryButton("AFK", "afk"))
+                .append(Component.text(" ", NamedTextColor.DARK_GRAY))
+                .append(createCategoryButton("Eventi", "eventi"));
 
         if (isAdmin) {
             nav = nav.append(Component.text(" ", NamedTextColor.DARK_GRAY))
@@ -125,6 +127,14 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(createCmd("/rank list", "Mostra l'elenco di tutti i rank disponibili", "/rank list", false));
         sender.sendMessage(createCmd("/rank info [giocatore]", "Visualizza i dettagli del tuo rank o di un altro utente", "/rank info", false));
 
+        // Sezione Eventi a Premi
+        sender.sendMessage(Component.empty());
+        sender.sendMessage(MessageUtil.format("&6🏆 Eventi a Premi &8(/aiuto eventi)"));
+        sender.sendMessage(createCmd("/evento", "Panoramica dell'evento a premi attivo, obbiettivo e progresso", "/evento", false));
+        sender.sendMessage(createCmd("/evento partecipa", "Conferma obbligatoria della partecipazione all'evento", "/evento partecipa", false));
+        sender.sendMessage(createCmd("/evento top", "Visualizza la classifica dei partecipanti in tempo reale", "/evento top", false));
+        sender.sendMessage(createCmd("/evento info", "Visualizza premi in palio per la Top 3 e regolamento", "/evento info", false));
+
         // Sezione Admin (se abilitato)
         if (isAdmin) {
             sender.sendMessage(Component.empty());
@@ -149,6 +159,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(createAdminCmd("/sleep reload", "Ricarica il sistema del sonno", "/sleep reload", false));
             sender.sendMessage(createAdminCmd("/afk <player>", "Imposta lo stato AFK di un utente", "/afk ", true));
             sender.sendMessage(createAdminCmd("/bag <player>", "Ispeziona e gestisci lo zaino di un giocatore", "/bag ", true));
+            sender.sendMessage(createAdminCmd("/evento admin <start|stop|kick|setprogress|reset|reload|giveprize>", "Gestione amministrativa degli eventi a premi", "/evento admin ", true));
             sender.sendMessage(createAdminCmd("/reload", "Ricarica tutte le configurazioni e moduli del plugin", "/reload", false));
         }
 
@@ -292,6 +303,25 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                 }
                 sender.sendMessage(MessageUtil.format("&7Suggerimento: l'orario del plugin e' sincronizzato con il fuso &eEurope/Rome&7."));
             }
+            case "evento", "eventi", "event" -> {
+                sender.sendMessage(MessageUtil.format("&6🏆 Dettagli Eventi a Premi:"));
+                sender.sendMessage(createCmd("/evento", "Panoramica dell'evento corrente, stato e pulsanti", "/evento", false));
+                sender.sendMessage(createCmd("/evento partecipa", "Conferma obbligatoria di partecipazione all'evento", "/evento partecipa", false));
+                sender.sendMessage(createCmd("/evento abbandona", "Ritiro volontario dalla partecipazione all'evento", "/evento abbandona", false));
+                sender.sendMessage(createCmd("/evento top", "Visualizza la classifica in tempo reale", "/evento top", false));
+                sender.sendMessage(createCmd("/evento info", "Dettagli obbiettivi e premi della Top 3", "/evento info", false));
+                sender.sendMessage(createCmd("/evento dungeon", "Teletrasporto sicuro a un dungeon (per il 3° posto)", "/evento dungeon", false));
+                if (isAdmin) {
+                    sender.sendMessage(createAdminCmd("/evento admin start [id]", "Avvia forzatamente l'evento a premi", "/evento admin start ", true));
+                    sender.sendMessage(createAdminCmd("/evento admin stop", "Interrompe l'evento a premi in corso", "/evento admin stop", false));
+                    sender.sendMessage(createAdminCmd("/evento admin kick <giocatore>", "Espelle un giocatore dalla partecipazione all'evento", "/evento admin kick ", true));
+                    sender.sendMessage(createAdminCmd("/evento admin setprogress <player> <val>", "Imposta il punteggio di un giocatore", "/evento admin setprogress ", true));
+                    sender.sendMessage(createAdminCmd("/evento admin reset", "Azzera partecipanti e progressi dell'evento", "/evento admin reset", false));
+                    sender.sendMessage(createAdminCmd("/evento admin reload", "Ricarica il file events.yml", "/evento admin reload", false));
+                    sender.sendMessage(createAdminCmd("/evento admin giveprize <giocatore> <premio>", "Assegna il premio a scelta a un vincitore", "/evento admin giveprize ", true));
+                }
+                sender.sendMessage(MessageUtil.format("&7Nota: e obbligatorio confermare la partecipazione per far conteggiare i blocchi!"));
+            }
             default -> {
                 sender.sendMessage(MessageUtil.format("&cSezione '&e" + section + "&c' non trovata."));
                 sender.sendMessage(MessageUtil.format("&7Usa &e/aiuto&7 per vedere l'elenco completo delle sezioni disponibili."));
@@ -335,7 +365,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
             boolean isAdmin = sender.isOp() || sender.hasPermission("caciottacore.admin");
-            List<String> sections = new ArrayList<>(List.of("home", "warp", "tpa", "tpback", "sit", "sleep", "afk", "sb", "rank", "news", "bag", "orario"));
+            List<String> sections = new ArrayList<>(List.of("home", "warp", "tpa", "tpback", "sit", "sleep", "afk", "sb", "rank", "news", "bag", "orario", "evento", "eventi"));
             if (isAdmin) {
                 sections.add("admin");
                 sections.add("mod");

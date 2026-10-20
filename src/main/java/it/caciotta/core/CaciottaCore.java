@@ -6,6 +6,7 @@ import it.caciotta.core.bag.*;
 import it.caciotta.core.broadcast.*;
 import it.caciotta.core.command.ReloadCommand;
 import it.caciotta.core.config.ConfigManager;
+import it.caciotta.core.event.*;
 import it.caciotta.core.help.*;
 import it.caciotta.core.home.*;
 import it.caciotta.core.rank.*;
@@ -46,6 +47,7 @@ public final class CaciottaCore extends JavaPlugin {
     private SleepManager sleepManager;
     private AfkManager afkManager;
     private TimeManager timeManager;
+    private EventManager eventManager;
 
     public static CaciottaCore getInstance() {
         return instance;
@@ -73,9 +75,11 @@ public final class CaciottaCore extends JavaPlugin {
         this.sleepManager = new SleepManager(this);
         this.afkManager = new AfkManager(this);
         this.timeManager = new TimeManager(this);
+        this.eventManager = new EventManager(this);
 
         // Registrazione Eventi
         PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(new EventListener(this, this.eventManager), this);
         pm.registerEvents(new RankListener(this), this);
         pm.registerEvents(new SitListener(this), this);
         pm.registerEvents(new AuthListener(this), this);
@@ -302,6 +306,14 @@ public final class CaciottaCore extends JavaPlugin {
             orarioCmd.setTabCompleter(orarioCommand);
         }
 
+        // Registrazione Comando Evento
+        EventCommand eventCommand = new EventCommand(this, this.eventManager);
+        PluginCommand eventCmd = getCommand("evento");
+        if (eventCmd != null) {
+            eventCmd.setExecutor(eventCommand);
+            eventCmd.setTabCompleter(eventCommand);
+        }
+
         // Registrazione Comando Aiuto
         HelpCommand helpCommand = new HelpCommand(this);
         PluginCommand helpCmd = getCommand("aiuto");
@@ -382,6 +394,9 @@ public final class CaciottaCore extends JavaPlugin {
         if (timeManager != null) {
             timeManager.reload();
         }
+        if (eventManager != null) {
+            eventManager.reload();
+        }
         if (sitManager != null && configManager != null && !configManager.isSitEnabled()) {
             sitManager.cleanup();
         }
@@ -428,6 +443,9 @@ public final class CaciottaCore extends JavaPlugin {
         }
         if (afkManager != null) {
             afkManager.cleanup();
+        }
+        if (eventManager != null) {
+            eventManager.cleanup();
         }
         getLogger().info("CaciottaCore disabilitato con successo.");
     }
@@ -490,5 +508,9 @@ public final class CaciottaCore extends JavaPlugin {
 
     public TimeManager getTimeManager() {
         return timeManager;
+    }
+
+    public EventManager getEventManager() {
+        return eventManager;
     }
 }
