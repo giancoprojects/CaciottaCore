@@ -14,6 +14,8 @@
 11. **Sistema AFK (/afk)**: passaggio in modalità Spettatore, blocco totale di qualsiasi tipo di azione (chat, comandi, interazioni, teletrasporti spectator) e ripristino istantaneo della gamemode e della posizione al minimo movimento con la tastiera.
 12. **Sistema Orario e Fuso Orario Italiano (/orario)**: orario del server sincronizzato con il fuso orario italiano (`Europe/Rome`), consultabile con il comando `/orario` (alias `/ora`, `/time`, `/servertime`), e applicato coerentemente alla scoreboard (`{date}`, `{time}`, `{timezone}`), alle scadenze di moderazione e al reset di mezzanotte degli utilizzi giornalieri di `/tpback`.
 13. **Sistema Eventi a Premi (/evento)**: gestione di competizioni a premi per la community con data di inizio nel fuso italiano, obbiettivo target quantitativo (es. 10.000 blocchi per l'evento Scavatore), classifica in tempo reale, proclamazione automatica della Top 3 vincitori con ricompense speciali (Rank Scavatore con 15 home e vantaggi esclusivi, Fullset Netherite con enchant a sorpresa, Teletrasporto sicuro a dungeon inesplorati), obbligo di conferma partecipazione e supporto alla seconda scoreboard dinamica.
+14. **Sistema Teletrasporto Casuale (/rtp)**: teletrasporto in un punto casuale sicuro del mondo con pre-generazione asincrona preventiva del chunk prima del teletrasporto (massima fluidità PaperMC senza lag spike), limite rigido di 1 utilizzo mensile per tutti gli utenti a prescindere dal rank (sincronizzato con il fuso orario italiano `Europe/Rome` e persistenza su `data/rtp.yml`), supporto a conto alla rovescia, cancellazione su movimento/danno e suite di comandi amministrativi `/rtp admin`.
+15. **Sistema Cestino Comune (/cestino)**: inventario condiviso in tempo reale tra tutti i giocatori in cui è possibile depositare o prelevare liberamente oggetti, con reset e svuotamento automatico programmato ogni 15 minuti, avvisi di reset, persistenza su `data/cestino.yml` e comandi staff (`/cestino clear`).
 
 ---
 
@@ -152,6 +154,25 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
 
 ---
 
+### 🎲 Comando Teletrasporto Casuale (/rtp)
+| Comando | Descrizione | Permesso | Default |
+|---|---|---|---|
+| `/rtp` (o `/randomtp`, `/rteleport`) | Teletrasportati in un punto casuale sicuro del mondo | `caciottacore.rtp.use` | Tutti |
+| `/rtp info` (o `/rtp status`) | Visualizza lo stato di utilizzo mensile e la data del prossimo reset | `caciottacore.rtp.use` | Tutti |
+| `/rtp admin reset <giocatore>` | Resetta l'utilizzo mensile di un giocatore specifico | `caciottacore.rtp.admin` | Solo OP |
+| `/rtp admin resetall` | Resetta l'utilizzo mensile di tutti i giocatori | `caciottacore.rtp.admin` | Solo OP |
+| `/rtp admin reload` | Ricarica configurazione e dati del modulo RTP | `caciottacore.rtp.admin` | Solo OP |
+
+- **Limite mensile**: consentito **1 volta al mese per tutti gli utenti a prescindere dal rank**. Il reset avviene automaticamente il 1° giorno del mese successivo (sincronizzato con il fuso `Europe/Rome`).
+- **Pre-generazione asincrona dei chunk**: il chunk di destinazione viene generato e caricato completamente in memoria in modo asincrono tramite Paper API (`getChunkAtAsync(..., true)`) prima di eseguire il teletrasporto, garantendo massima fluidità senza lag spike.
+- **Verifica sicurezza**: il sistema analizza la superficie del chunk generato per individuare un blocco solido e sicuro (evita lava, acqua, oceani, piante spinose, blocchi di magma e cadute nel vuoto). Se una coordinata non è sicura, riprova automaticamente fino a `max-attempts`.
+- **Conto alla rovescia**: teletrasporto preceduto da un conto alla rovescia configurabile (default: 3 secondi), annullabile se il giocatore si muove o subisce danno.
+- **Permessi aggiuntivi**:
+  - `caciottacore.rtp.bypasscooldown`: teletrasporto istantaneo senza attendere il conto alla rovescia (default: OP).
+  - `caciottacore.rtp.bypasslimit`: bypass del limite mensile di 1 utilizzo riservato agli amministratori per scopi di test (default: OP).
+
+---
+
 ### 🛡️ Comandi Moderazione (Staff)
 | Comando | Descrizione | Permesso | Default |
 |---|---|---|---|
@@ -239,12 +260,13 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
 |---|---|---|---|
 | `/news` (o `/novita`, `/updates`) | Visualizza il libro interattivo con le novità recenti del server | `caciottacore.news.use` | Tutti |
 | `/news toggle` | Alterna tra apertura automatica del libro o avviso cliccabile in chat all'accesso | `caciottacore.news.use` | Tutti |
-| `/news reload` | Ricarica il contenuto del libro delle novità da `config.yml` | `caciottacore.news.admin` | Solo OP |
+| `/news reload` | Ricarica il contenuto e i messaggi del libro delle novità da `news.yml` | `caciottacore.news.admin` | Solo OP |
 
-- **Apertura automatica al login / registrazione**: non appena un utente effettua il login, la registrazione o il rientro da sessione IP attiva, il server apre automaticamente a schermo intero il libro con le novità recenti (qualora ve ne siano di configurate in `config.yml`).
+- **Configurazione dedicata in `news.yml`**: le pagine del libro, il titolo, l'autore, i suoni e tutti i messaggi sono configurabili separatamente nel file dedicato `news.yml`.
+- **Apertura automatica al login / registrazione**: non appena un utente effettua il login, la registrazione o il rientro da sessione IP attiva, il server apre automaticamente a schermo intero il libro con le novità recenti (qualora ve ne siano di configurate in `news.yml`).
 - **Modalità avviso chat (Silenziosa)**: i giocatori possono disattivare l'apertura automatica del libro cliccando direttamente sul pulsante interattivo `[Non mostrare all'accesso]` presente nell'ultima pagina del libro oppure digitando `/news toggle`. In questo modo, all'accesso riceveranno invece un elegante messaggio in chat con `[CLICCA QUI]` per aprirlo a piacimento.
 - **Nessun ingombro nell'inventario**: il libro viene proiettato direttamente come interfaccia grafica client nativa (Kyori Adventure API) senza occupare slot o droppare oggetti.
-- **Persistenza e Reload a caldo**: le preferenze dei giocatori vengono salvate su `data/news.yml` e mantenute tra i riavvii; la configurazione del libro e dei messaggi si ricarica istantaneamente con `/news reload` e `/reload`.
+- **Persistenza e Reload a caldo**: le preferenze dei giocatori vengono salvate su `data/news_data.yml` e mantenute tra i riavvii; la configurazione del libro e dei messaggi si ricarica istantaneamente con `/news reload` e `/reload`.
 
 ---
 
@@ -259,6 +281,35 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
 - **Ispezione staff completa**: i moderatori e admin possono visualizzare e gestire gli zaini dei giocatori sia online sia offline.
 - **Protezione Shulker Box**: opzione configurabile per impedire l'inserimento di Shulker Box nello zaino per evitare storage infinito o bug NBT.
 - **Persistenza e sicurezza**: salvataggio automatico continuo in `data/bags/<uuid>.yml` alla chiusura dell'inventario, disconnessione o riavvio del server.
+
+---
+
+### 🗑️ Sistema Cestino Comune (Cestino)
+| Comando | Descrizione | Permesso | Default |
+|---|---|---|---|
+| `/cestino` (o `/trash`, `/bin`, `/disposal`, `/cestinocomune`) | Apri il cestino comune condiviso per depositare o prendere oggetti | `caciottacore.cestino.use` | **Tutti** |
+| `/cestino tempo` (o `/cestino info`, `countdown`) | Visualizza il conto alla rovescia al prossimo svuotamento automatico | `caciottacore.cestino.use` | **Tutti** |
+| `/cestino clear` (o `/cestino svuota`, `reset`) | Svuota istantaneamente tutti gli oggetti nel cestino e riavvia il timer | `caciottacore.cestino.admin` | Solo OP |
+| `/cestino reload` | Ricarica configurazione e timer del cestino comune | `caciottacore.cestino.admin` | Solo OP |
+
+- **Inventario comune condiviso**: chiunque acceda a `/cestino` vede e interagisce con lo stesso inventario in tempo reale. È possibile depositare oggetti che non servono o prelevare liberamente ciò che è stato lasciato da altri utenti.
+- **Reset e svuotamento automatico ogni 15 minuti**: ogni 15 minuti il cestino viene svuotato automaticamente. Gli oggetti all'interno vengono eliminati con avviso broadcast in chat e notifica visiva/sonora per chiunque abbia l'inventario aperto.
+- **Persistenza su disco**: i contenuti del cestino e il timestamp del prossimo reset sono memorizzati in `data/cestino.yml` per preservare il countdown e gli oggetti anche dopo un `/reload` o riavvio del server.
+
+---
+
+### 🔍 Sistema Ispezione Inventari (/invsee)
+| Comando | Descrizione | Permesso | Default |
+|---|---|---|---|
+| `/invsee <giocatore>` (o `/openinv`, `/viewinv`, `/inv`) | Ispeziona e gestisci in tempo reale l'inventario e l'equipaggiamento di un giocatore online | `caciottacore.invsee` | Solo OP |
+| `/invsee <giocatore> readonly` (o `ro`) | Ispeziona l'inventario in modalità di sola visualizzazione (impedisce modifiche) | `caciottacore.invsee` | Solo OP |
+| `/invsee <giocatore> ender` (o `ec`) | Visualizza e gestisce direttamente l'Ender Chest personale del giocatore | `caciottacore.invsee` | Solo OP |
+
+- **Layout completo a 54 slot**: mostra i 27 slot di storage principale, i 9 slot della hotbar, i 4 slot dell'armatura (Elmo, Pettorina, Gambali, Stivali), lo slot della seconda mano (Off-hand), una scheda statistica del giocatore e un pulsante rapido per l'Ender Chest.
+- **Sincronizzazione bidirezionale in tempo reale**: qualsiasi modifica apportata dallo staff si riflette istantaneamente nell'inventario del giocatore bersaglio e viceversa.
+- **Scheda statistica dinamica (Testa Skull)**: visualizza vita, fame, livello XP, coordinate, mondo, modalità di gioco, ping e indirizzo IP.
+- **Supporto modalità sola lettura**: configurabile globalmente con `allow-modification: false` o per singola sessione con l'argomento `readonly`.
+- **Protezione immunità staff**: gli utenti con permesso `caciottacore.invsee.exempt` sono protetti dall'ispezione dello staff non-OP.
 
 ---
 
@@ -334,6 +385,7 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
   - Sistema Moderazione: Ricarica archivio sanzioni, ban e mute attivi (`data/moderation.yml`).
   - Sistema News: Ricarica pagine e configurazione del libro delle novità.
   - Sistema Bag: Salvataggio e ricarica cache degli inventari degli zaini.
+  - Sistema Cestino: Salvataggio e ricarica timer e inventario comune (/cestino).
   - Sistema Sleep: Ricarica task del ciclo orario notturno, annunci e impostazioni di salto notte.
   - Sistema AFK: Ripristino gamemode e ricarica impostazioni modulo AFK.
   - Sistema Orario: Ricarica e sincronizzazione del fuso orario italiano per scoreboard, orario e controlli giornalieri.

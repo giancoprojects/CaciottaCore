@@ -86,6 +86,16 @@ commands:
     usage: /tpback
     aliases: [back]
     permission: caciottacore.tpback.use
+  rtp:
+    description: Teletrasportati in un punto casuale del mondo (utilizzabile 1 volta al mese a prescindere dal rank).
+    usage: /rtp [info|status]
+    aliases: [randomtp, rteleport]
+    permission: caciottacore.rtp.use
+  cestino:
+    description: Apri il cestino comune condiviso per depositare o prendere oggetti (si svuota ogni 15 minuti).
+    usage: /cestino [tempo|clear|reload]
+    aliases: [trash, bin, disposal, cestinocomune]
+    permission: caciottacore.cestino.use
   scoreboard:
     description: Attiva o disattiva la visualizzazione della scoreboard.
     usage: /scoreboard [toggle|reload]
@@ -181,6 +191,11 @@ commands:
     usage: /orario [reload]
     aliases: [ora, time, servertime]
     permission: caciottacore.orario.use
+  invsee:
+    description: Permette allo staff di ispezionare e gestire l'inventario dei giocatori in tempo reale.
+    usage: /<command> <giocatore> [readonly|ender]
+    aliases: [openinv, viewinv, inv]
+    permission: caciottacore.invsee
 
 permissions:
   caciottacore.*:
@@ -197,6 +212,9 @@ permissions:
       caciottacore.auth.*: true
       caciottacore.tpa.*: true
       caciottacore.tpback.*: true
+      caciottacore.rtp.*: true
+      caciottacore.cestino.*: true
+      caciottacore.invsee.*: true
       caciottacore.mod.*: true
       caciottacore.news.*: true
       caciottacore.orario.*: true
@@ -210,6 +228,9 @@ permissions:
       caciottacore.broadcast: true
       caciottacore.reload: true
       caciottacore.event.*: true
+      caciottacore.rtp.admin: true
+      caciottacore.cestino.admin: true
+      caciottacore.invsee.*: true
   caciottacore.home.*:
     description: Accesso a tutti i comandi e funzionalita home.
     default: op
@@ -297,6 +318,38 @@ permissions:
     default: op
   caciottacore.tpback.unlimited:
     description: Permette di usare il comando /tpback senza limite massimo giornaliero.
+    default: op
+  caciottacore.rtp.*:
+    description: Accesso completo a tutte le funzionalita del comando /rtp.
+    default: op
+    children:
+      caciottacore.rtp.use: true
+      caciottacore.rtp.admin: true
+      caciottacore.rtp.bypasscooldown: true
+      caciottacore.rtp.bypasslimit: true
+  caciottacore.rtp.use:
+    description: Permette di teletrasportarsi in un punto casuale con /rtp (1 volta al mese a prescindere dal rank).
+    default: true
+  caciottacore.rtp.admin:
+    description: Permette di resettare utilizzi mensili e ricaricare il modulo RTP.
+    default: op
+  caciottacore.rtp.bypasscooldown:
+    description: Permette di teletrasportarsi tramite /rtp istantaneamente senza attendere il conto alla rovescia.
+    default: op
+  caciottacore.rtp.bypasslimit:
+    description: Permette agli amministratori di ignorare il limite mensile di 1 utilizzo di /rtp per test.
+    default: op
+  caciottacore.cestino.*:
+    description: Accesso completo a tutte le funzionalita del cestino comune.
+    default: op
+    children:
+      caciottacore.cestino.use: true
+      caciottacore.cestino.admin: true
+  caciottacore.cestino.use:
+    description: Permette di aprire il cestino comune con /cestino e vedere il timer.
+    default: true
+  caciottacore.cestino.admin:
+    description: Permette di svuotare istantaneamente il cestino comune e ricaricare il modulo.
     default: op
   caciottacore.scoreboard.*:
     description: Accesso a tutte le funzionalita della scoreboard.
@@ -441,5 +494,20 @@ permissions:
   caciottacore.event.admin:
     description: Permette di forzare l'avvio, interrompere o espellere giocatori dagli eventi.
     default: op
+  caciottacore.invsee.*:
+    description: Accesso completo a tutte le funzionalita di ispezione inventario.
+    default: op
+    children:
+      caciottacore.invsee: true
+      caciottacore.invsee.modify: true
+  caciottacore.invsee:
+    description: Permette di utilizzare il comando /invsee per ispezionare l'inventario dei giocatori.
+    default: op
+  caciottacore.invsee.modify:
+    description: Permette di modificare gli oggetti dell'inventario ispezionato con /invsee.
+    default: op
+  caciottacore.invsee.exempt:
+    description: Protegge l'inventario del giocatore dall'ispezione con /invsee da parte dello staff non-OP.
+    default: false
 
 

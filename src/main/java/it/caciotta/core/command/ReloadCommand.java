@@ -65,9 +65,12 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
         MessageUtil.sendMessage(sender, " &8» &ehomes &7(Cache dati home)");
         MessageUtil.sendMessage(sender, " &8» &eauth &7(Database account e sessioni)");
         MessageUtil.sendMessage(sender, " &8» &etpback &7(Teletrasporto punto di morte e conteggio giornaliero)");
+        MessageUtil.sendMessage(sender, " &8» &ertp &7(Teletrasporto casuale mensile e generazione chunk)");
         MessageUtil.sendMessage(sender, " &8» &emoderazione &7(Archivio sanzioni, ban e mute attivi)");
-        MessageUtil.sendMessage(sender, " &8» &enews &7(Libro novita e aggiornamenti server)");
+        MessageUtil.sendMessage(sender, " &8» &enews.yml &7(Libro novita e aggiornamenti server)");
         MessageUtil.sendMessage(sender, " &8» &ebag &7(Zaini personali e cache inventari)");
+        MessageUtil.sendMessage(sender, " &8» &ecestino &7(Cestino comune e timer reset 15m)");
+        MessageUtil.sendMessage(sender, " &8» &einvsee &7(Sessioni ispezione inventari e permessi)");
         MessageUtil.sendMessage(sender, " &8» &esleep &7(Ciclo notte, annuncio orario e riposo)");
         MessageUtil.sendMessage(sender, " &8» &eafk &7(Modalita spettatore e protezione azioni)");
         MessageUtil.sendMessage(sender, " &8» &eorario &7(Fuso orario italiano e sincronizzazione data/ora)");

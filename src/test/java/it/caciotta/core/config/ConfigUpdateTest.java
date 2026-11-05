@@ -16,8 +16,8 @@ public class ConfigUpdateTest {
 
     @Test
     public void testConfigUpdate() throws Exception {
-        // Simula un vecchio config.yml senza la sezione news e senza tpback
-        String oldConfigContent = "prefix: \"&8[&6Old&8] \"\nhome:\n  teleport-delay: 5\n";
+        // Simula un vecchio config.yml con residuo di news e senza tpback/rtp/cestino
+        String oldConfigContent = "prefix: \"&8[&6Old&8] \"\nhome:\n  teleport-delay: 5\nnews:\n  enabled: false\n";
         File tempFile = File.createTempFile("old_config", ".yml");
         tempFile.deleteOnExit();
         Files.writeString(tempFile.toPath(), oldConfigContent);
@@ -51,6 +51,16 @@ public class ConfigUpdateTest {
             }
         }
 
+        // Rimuovi tracce legacy di news (spostate nel file separato news.yml)
+        if (currentConfig.contains("news")) {
+            currentConfig.set("news", null);
+            updated = true;
+        }
+        if (currentConfig.contains("messages.news")) {
+            currentConfig.set("messages.news", null);
+            updated = true;
+        }
+
         assertTrue(updated, "Dovrebbe aver rilevato chiavi mancanti!");
         currentConfig.save(tempFile);
 
@@ -58,8 +68,11 @@ public class ConfigUpdateTest {
         System.out.println("=== SAVED CONFIG CONTENT ===");
         System.out.println(savedContent);
 
-        assertTrue(savedContent.contains("news:"), "Il file salvato deve contenere la sezione news");
+        assertFalse(savedContent.contains("news:"), "Il file salvato NON deve contenere la sezione news (spostata in news.yml)");
         assertTrue(savedContent.contains("tpback:"), "Il file salvato deve contenere la sezione tpback");
+        assertTrue(savedContent.contains("rtp:"), "Il file salvato deve contenere la sezione rtp");
+        assertTrue(savedContent.contains("cestino:"), "Il file salvato deve contenere la sezione cestino");
+        assertTrue(savedContent.contains("invsee:"), "Il file salvato deve contenere la sezione invsee");
         assertTrue(savedContent.contains("teleport-delay: 5"), "Il valore personalizzato dell'utente (5) deve essere preservato");
         assertTrue(savedContent.contains("Old"), "Il prefisso personalizzato dell'utente deve essere preservato");
     }

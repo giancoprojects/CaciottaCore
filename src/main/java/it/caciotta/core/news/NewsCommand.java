@@ -18,6 +18,7 @@ import java.util.Locale;
 /**
  * Comando /news (alias /novita, /updates) per visualizzare il libro delle novità del server
  * o impostare la preferenza di apertura/notifica all'accesso.
+ * Ricarica le impostazioni direttamente dal file news.yml tramite /news reload.
  */
 public class NewsCommand implements CommandExecutor, TabCompleter {
 
@@ -38,9 +39,8 @@ public class NewsCommand implements CommandExecutor, TabCompleter {
                 MessageUtil.sendMessage(sender, configManager.getPrefixedMessage("no-permission"));
                 return true;
             }
-            configManager.reload();
             newsManager.reload();
-            MessageUtil.sendMessage(sender, configManager.getPrefixedMessage("news.reloaded"));
+            MessageUtil.sendMessage(sender, newsManager.getPrefixedMessage("reloaded"));
             return true;
         }
 
@@ -57,15 +57,15 @@ public class NewsCommand implements CommandExecutor, TabCompleter {
         if (args.length > 0 && (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("notifica"))) {
             boolean nowChatMode = newsManager.toggleChatMode(player.getUniqueId());
             if (nowChatMode) {
-                MessageUtil.sendMessage(player, configManager.getPrefixedMessage("news.toggled-to-chat"));
+                MessageUtil.sendMessage(player, newsManager.getPrefixedMessage("toggled-to-chat"));
             } else {
-                MessageUtil.sendMessage(player, configManager.getPrefixedMessage("news.toggled-to-book"));
+                MessageUtil.sendMessage(player, newsManager.getPrefixedMessage("toggled-to-book"));
             }
             return true;
         }
 
         if (!newsManager.hasNews()) {
-            MessageUtil.sendMessage(player, configManager.getPrefixedMessage("news.no-news"));
+            MessageUtil.sendMessage(player, newsManager.getPrefixedMessage("no-news"));
             return true;
         }
 

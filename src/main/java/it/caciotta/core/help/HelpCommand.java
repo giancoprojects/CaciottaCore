@@ -60,6 +60,8 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
                 .append(createCategoryButton("TpBack", "tpback"))
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
+                .append(createCategoryButton("RTP", "rtp"))
+                .append(Component.text(" ", NamedTextColor.DARK_GRAY))
                 .append(createCategoryButton("Sit", "sit"))
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
                 .append(createCategoryButton("Scoreboard", "sb"))
@@ -69,6 +71,8 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                 .append(createCategoryButton("News", "news"))
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
                 .append(createCategoryButton("Bag", "bag"))
+                .append(Component.text(" ", NamedTextColor.DARK_GRAY))
+                .append(createCategoryButton("Cestino", "cestino"))
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
                 .append(createCategoryButton("Sleep", "sleep"))
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
@@ -108,6 +112,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(createCmd("/tpdeny [giocatore]", "Rifiuta una richiesta di teletrasporto in sospeso", "/tpdeny", false));
         sender.sendMessage(createCmd("/tpacancel", "Annulla la richiesta di teletrasporto inviata", "/tpacancel", false));
         sender.sendMessage(createCmd("/tpback", "Torna al punto della tua ultima morte (entro 30s, max 3/giorno)", "/tpback", false));
+        sender.sendMessage(createCmd("/rtp", "Teletrasportati in un punto casuale (1 volta al mese)", "/rtp", false));
 
         // Sezione Interazione & Scoreboard
         sender.sendMessage(Component.empty());
@@ -116,6 +121,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(createCmd("/sleep", "Mettiti a dormire per far passare la notte", "/sleep", false));
         sender.sendMessage(createCmd("/afk", "Entra in modalita AFK (Spettatore)", "/afk", false));
         sender.sendMessage(createCmd("/bag", "Apri il tuo zaino personale portatile", "/bag", false));
+        sender.sendMessage(createCmd("/cestino", "Apri il cestino comune condiviso (reset ogni 15m)", "/cestino", false));
         sender.sendMessage(createCmd("/scoreboard", "Attiva o disattiva la tua scoreboard personale", "/scoreboard", false));
         sender.sendMessage(createCmd("/news", "Visualizza il libro con le novita recenti del server", "/news", false));
         sender.sendMessage(createCmd("/orario", "Visualizza la data e l'orario attuale del server", "/orario", false));
@@ -159,6 +165,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(createAdminCmd("/sleep reload", "Ricarica il sistema del sonno", "/sleep reload", false));
             sender.sendMessage(createAdminCmd("/afk <player>", "Imposta lo stato AFK di un utente", "/afk ", true));
             sender.sendMessage(createAdminCmd("/bag <player>", "Ispeziona e gestisci lo zaino di un giocatore", "/bag ", true));
+            sender.sendMessage(createAdminCmd("/invsee <player>", "Ispeziona e gestisci l'inventario di un giocatore", "/invsee ", true));
             sender.sendMessage(createAdminCmd("/evento admin <start|stop|kick|setprogress|reset|reload|giveprize>", "Gestione amministrativa degli eventi a premi", "/evento admin ", true));
             sender.sendMessage(createAdminCmd("/reload", "Ricarica tutte le configurazioni e moduli del plugin", "/reload", false));
         }
@@ -198,6 +205,18 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                 sender.sendMessage(MessageUtil.format("&6💀 Dettagli Comando Ritorno Morte (/tpback):"));
                 sender.sendMessage(createCmd("/tpback", "Teletrasportati dove sei morto (entro 30s, max 3 al giorno)", "/tpback", false));
                 sender.sendMessage(MessageUtil.format("&7Nota: consentito solo entro 30 secondi dalla morte e per un massimo di 3 volte durante la giornata."));
+            }
+            case "rtp", "randomtp", "rteleport" -> {
+                sender.sendMessage(MessageUtil.format("&6🎲 Dettagli Comando RandomTP (/rtp):"));
+                sender.sendMessage(createCmd("/rtp", "Teletrasportati in un punto casuale del mondo (1 volta al mese)", "/rtp", false));
+                sender.sendMessage(createCmd("/rtp info", "Visualizza lo stato di utilizzo del mese e la data del prossimo reset", "/rtp info", false));
+                if (isAdmin) {
+                    sender.sendMessage(createAdminCmd("/rtp admin reset <giocatore>", "Resetta l'utilizzo mensile di un giocatore", "/rtp admin reset ", true));
+                    sender.sendMessage(createAdminCmd("/rtp admin resetall", "Resetta l'utilizzo mensile di tutti i giocatori", "/rtp admin resetall", false));
+                    sender.sendMessage(createAdminCmd("/rtp admin reload", "Ricarica configurazione e dati RTP", "/rtp admin reload", false));
+                }
+                sender.sendMessage(MessageUtil.format("&7Nota: utilizzabile solo 1 volta al mese da tutti gli utenti a prescindere dal rank."));
+                sender.sendMessage(MessageUtil.format("&7Il chunk viene sempre generato in modo asincrono prima che avvenga il teletrasporto!"));
             }
             case "sit" -> {
                 sender.sendMessage(MessageUtil.format("&6🪑 Dettagli Comando Sit:"));
@@ -260,6 +279,9 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                     sender.sendMessage(createAdminCmd("/authadmin unregister <player>", "De-registra account", "/authadmin unregister ", true));
                     sender.sendMessage(createAdminCmd("/authadmin reload", "Ricarica config.yml", "/authadmin reload", false));
                     sender.sendMessage(createAdminCmd("/sb reload", "Ricarica la scoreboard", "/sb reload", false));
+                    sender.sendMessage(createAdminCmd("/rtp admin <reset|resetall|reload>", "Gestione utilizzi mensili e configurazione RTP", "/rtp admin ", true));
+                    sender.sendMessage(createAdminCmd("/cestino clear", "Svuota istantaneamente il cestino comune", "/cestino clear", false));
+                    sender.sendMessage(createAdminCmd("/invsee <player> [readonly]", "Ispeziona e gestisci l'inventario e l'equipaggiamento di un giocatore", "/invsee ", true));
                     sender.sendMessage(createAdminCmd("/reload", "Ricarica tutte le configurazioni e i moduli del plugin", "/reload", false));
                 }
             }
@@ -294,6 +316,16 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                     sender.sendMessage(createAdminCmd("/bag <player>", "Ispeziona e gestisci lo zaino di un altro giocatore", "/bag ", true));
                 }
                 sender.sendMessage(MessageUtil.format("&7Suggerimento: puoi espandere la capienza dello zaino (fino a 6 righe / 54 slot) tramite i gradi rank!"));
+            }
+            case "cestino", "trash", "bin", "disposal", "cestinocomune" -> {
+                sender.sendMessage(MessageUtil.format("&6🗑 Dettagli Cestino Comune (/cestino):"));
+                sender.sendMessage(createCmd("/cestino", "Apri il cestino comune per depositare o prendere oggetti", "/cestino", false));
+                sender.sendMessage(createCmd("/cestino tempo", "Visualizza il conto alla rovescia al prossimo reset", "/cestino tempo", false));
+                if (isAdmin) {
+                    sender.sendMessage(createAdminCmd("/cestino clear", "Svuota istantaneamente tutti gli oggetti nel cestino", "/cestino clear", false));
+                    sender.sendMessage(createAdminCmd("/cestino reload", "Ricarica configurazione e timer del cestino", "/cestino reload", false));
+                }
+                sender.sendMessage(MessageUtil.format("&7Nota: il cestino e' condiviso tra tutti gli utenti e si svuota automaticamente ogni 15 minuti!"));
             }
             case "orario", "ora", "time" -> {
                 sender.sendMessage(MessageUtil.format("&6⏰ Dettagli Comando Orario & Fuso Orario:"));
@@ -365,7 +397,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
             boolean isAdmin = sender.isOp() || sender.hasPermission("caciottacore.admin");
-            List<String> sections = new ArrayList<>(List.of("home", "warp", "tpa", "tpback", "sit", "sleep", "afk", "sb", "rank", "news", "bag", "orario", "evento", "eventi"));
+            List<String> sections = new ArrayList<>(List.of("home", "warp", "tpa", "tpback", "rtp", "sit", "sleep", "afk", "sb", "rank", "news", "bag", "cestino", "orario", "evento", "eventi"));
             if (isAdmin) {
                 sections.add("admin");
                 sections.add("mod");

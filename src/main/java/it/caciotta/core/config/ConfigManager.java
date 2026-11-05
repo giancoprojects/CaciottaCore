@@ -72,6 +72,16 @@ public class ConfigManager {
                 }
             }
 
+            // Rimuovi tracce legacy di news da config.yml (ora migrate nel file indipendente news.yml)
+            if (currentConfig.contains("news")) {
+                currentConfig.set("news", null);
+                modified = true;
+            }
+            if (currentConfig.contains("messages.news")) {
+                currentConfig.set("messages.news", null);
+                modified = true;
+            }
+
             if (modified) {
                 currentConfig.save(configFile);
                 plugin.getLogger().info("Aggiornato automaticamente config.yml con i nuovi parametri e le sezioni mancanti!");
@@ -227,25 +237,24 @@ public class ConfigManager {
             Map.entry("moderation.invalid-duration", "&cDurata specificata non valida: &e{error}"),
             Map.entry("moderation.player-not-found", "&cIl giocatore &e{target} &cnon e online o non e stato trovato."),
 
-            // News
-            Map.entry("news.no-news", "&cAl momento non sono presenti novita o aggiornamenti recenti del server."),
-            Map.entry("news.reloaded", "&aConfigurazione del libro delle novita ricaricata con successo!"),
-            Map.entry("news.usage-admin", "&cUso: &e/news &7(oppure &e/news toggle&7, &e/news reload&7)"),
-            Map.entry("news.toggled-to-chat", "&eD'ora in poi all'accesso riceverai una notifica in chat con il link cliccabile anziche aprire il libro."),
-            Map.entry("news.toggled-to-book", "&aD'ora in poi il libro delle novita si aprira automaticamente a ogni tuo accesso."),
-            Map.entry("news.chat-notice", "&7Ci sono novita recenti sul server! &e&l[CLICCA QUI]&7 per aprirle."),
-            Map.entry("news.chat-notice-hover", "&eClicca per aprire il libro delle novita!"),
-            Map.entry("news.book-button-hide", "&c&l[Non mostrare all'accesso]"),
-            Map.entry("news.book-button-hide-hover", "&7Clicca per ricevere solo un avviso in chat con link all'accesso."),
-            Map.entry("news.book-button-show", "&a&l[Riattiva apertura all'accesso]"),
-            Map.entry("news.book-button-show-hover", "&7Clicca per riattivare l'apertura automatica del libro all'accesso."),
-
             // Bag
             Map.entry("bag.open-other", "&aStai visualizzando lo zaino di &e{target}&a."),
             Map.entry("bag.target-not-found", "&cGiocatore &e{target} &cnon trovato o mai entrato nel server."),
             Map.entry("bag.cannot-open-dead", "&cNon puoi aprire lo zaino mentre sei morto!"),
             Map.entry("bag.item-forbidden", "&cNon puoi inserire questo oggetto (&e{item}&c) nello zaino!"),
             Map.entry("bag.disabled", "&cIl sistema dello zaino e attualmente disabilitato."),
+
+            // Invsee
+            Map.entry("invsee.disabled", "&cIl comando /invsee e attualmente disabilitato sul server."),
+            Map.entry("invsee.usage", "&cUso corretto: &e/{label} <giocatore> [readonly|ender]"),
+            Map.entry("invsee.player-not-found", "&cIl giocatore &e{target} &cnon e online o non e stato trovato."),
+            Map.entry("invsee.cannot-inspect-self", "&cNon puoi ispezionare il tuo stesso inventario con questo comando!"),
+            Map.entry("invsee.target-exempt", "&cNon puoi ispezionare l'inventario di &e{target} &cperche e un utente protetto!"),
+            Map.entry("invsee.opened", "&7Apertura inventario di &e{target}&7 in tempo reale..."),
+            Map.entry("invsee.opened-readonly", "&7Apertura inventario di &e{target} &7(modalita sola lettura)..."),
+            Map.entry("invsee.opened-ender", "&7Apertura Ender Chest personale di &e{target}&7..."),
+            Map.entry("invsee.cannot-modify", "&cQuesto inventario e in sola lettura! Non puoi modificare gli oggetti."),
+            Map.entry("invsee.target-disconnected", "&cIl giocatore &e{target} &csi e disconnesso dal server."),
 
             // Sleep
             Map.entry("sleep.broadcast-night", "&6🌙 &eÈ calata la notte! &7Per passare la giornata bisogna riposare e dormire."),
@@ -317,7 +326,38 @@ public class ConfigManager {
             Map.entry("event.prize-received", "&6🎁 &aTi e stato assegnato il premio &e{prize}&a per il tuo piazzamento nell'evento &6{event}&a!"),
             Map.entry("event.dungeon-teleported", "&d✨ Ti sei teletrasportato vicino a una struttura inesplorata! Preparati all'esplorazione!"),
             Map.entry("event.dungeon-failed", "&cImpossibile trovare una struttura non esplorata nelle vicinanze. Riprova tra poco."),
-            Map.entry("event.dungeon-no-item", "&cNon hai alcun teletrasporto dungeon da riscattare! Comunica la tua scelta a uno staffer per fartelo assegnare.")
+            Map.entry("event.dungeon-no-item", "&cNon hai alcun teletrasporto dungeon da riscattare! Comunica la tua scelta a uno staffer per fartelo assegnare."),
+
+            // RTP (Random Teleport)
+            Map.entry("rtp.disabled", "&cIl comando /rtp e attualmente disabilitato sul server."),
+            Map.entry("rtp.world-disabled", "&cNon puoi utilizzare il comando /rtp in questo mondo (&e{world}&c)!"),
+            Map.entry("rtp.monthly-limit-reached", "&cHai gia utilizzato il tuo teletrasporto casuale mensile per &e{month}&c! Potrai riutilizzarlo a partire dal &e{reset_date}&c."),
+            Map.entry("rtp.already-in-progress", "&cHai gia un teletrasporto o una ricerca in corso! Attendi il completamento."),
+            Map.entry("rtp.teleport-countdown", "&7Teletrasporto casuale tra &e{seconds} secondi&7... Non muoverti!"),
+            Map.entry("rtp.teleport-cancelled-move", "&cTeletrasporto casuale annullato perche ti sei mosso!"),
+            Map.entry("rtp.teleport-cancelled-damage", "&cTeletrasporto casuale annullato perche hai subito danno!"),
+            Map.entry("rtp.searching", "&7Ricerca di un punto sicuro e generazione del chunk in corso..."),
+            Map.entry("rtp.no-safe-location", "&cImpossibile trovare un punto sicuro dopo vari tentativi. Riprova tra qualche istante! Il tuo utilizzo mensile non e stato consumato."),
+            Map.entry("rtp.teleport-success", "&aTeletrasportato con successo in un punto casuale del mondo! &7(&eX: {x}, Y: {y}, Z: {z}&7) &8- &7(Prossimo riutilizzo: &e{reset_date}&7)"),
+            Map.entry("rtp.status-available", "&aIl tuo /rtp mensile e &2DISPONIBILE&a per il mese di &e{month}&a! &7Usa &e/rtp &7per teletrasportarti."),
+            Map.entry("rtp.status-used", "&cHai gia utilizzato il tuo /rtp per il mese di &e{month}&c. Prossimo reset: &e{reset_date}&c."),
+            Map.entry("rtp.admin-reset-success", "&aUso mensile di /rtp resettato con successo per il giocatore &e{player}&a!"),
+            Map.entry("rtp.admin-reset-all-success", "&aUsi mensili di /rtp resettati con successo per &etutti i giocatori&a!"),
+            Map.entry("rtp.admin-reload-success", "&aConfigurazione e dati del modulo RTP ricaricati con successo!"),
+            Map.entry("rtp.admin-usage", "&cUso admin: &e/{label} admin <reset|resetall|reload> [giocatore]"),
+            Map.entry("rtp.player-not-found", "&cGiocatore &e{player} &cnon trovato o offline."),
+
+            // Cestino Comune
+            Map.entry("cestino.disabled", "&cIl cestino comune e' attualmente disabilitato sul server."),
+            Map.entry("cestino.opened", "&7Hai aperto il &6cestino comune&7. Puoi depositare o prelevare liberamente oggetti!"),
+            Map.entry("cestino.cannot-open-dead", "&cNon puoi aprire il cestino mentre sei morto!"),
+            Map.entry("cestino.countdown", "&6🗑 &7Il cestino comune verra' svuotato tra &e{time}&7."),
+            Map.entry("cestino.cleared-broadcast", "&6🗑 &eIl cestino comune e' stato svuotato! I contenuti sono stati eliminati. Prossimo reset tra &6{minutes} minuti&e."),
+            Map.entry("cestino.cleared-viewer", "&6🗑 &cIl cestino comune e' appena stato svuotato! Tutti gli oggetti sono stati eliminati."),
+            Map.entry("cestino.cleared-admin", "&aHai svuotato manualmente il cestino comune con successo! Il timer di 15 minuti e' stato riavviato."),
+            Map.entry("cestino.reloaded", "&aConfigurazione e timer del cestino comune ricaricati con successo!"),
+            Map.entry("cestino.item-forbidden", "&cNon puoi inserire questo oggetto (&e{item}&c) nel cestino!"),
+            Map.entry("cestino.usage-admin", "&cUso admin: &e/{label} <clear|reload>")
     );
 
     public String getRawMessage(String path) {
@@ -577,30 +617,6 @@ public class ConfigManager {
         return config.getBoolean("tpback.notify-on-death", true);
     }
 
-    public boolean isNewsEnabled() {
-        return config.getBoolean("news.enabled", true);
-    }
-
-    public boolean isNewsOpenOnLogin() {
-        return config.getBoolean("news.open-on-login", true);
-    }
-
-    public String getNewsBookTitle() {
-        return config.getString("news.book-title", "&6Novita Server");
-    }
-
-    public String getNewsBookAuthor() {
-        return config.getString("news.book-author", "&eCaciottaCore");
-    }
-
-    public boolean isNewsPlaySound() {
-        return config.getBoolean("news.play-sound", true);
-    }
-
-    public java.util.List<String> getNewsPages() {
-        return config.getStringList("news.pages");
-    }
-
     public boolean isBagEnabled() {
         return config.getBoolean("bag.enabled", true);
     }
@@ -631,6 +647,26 @@ public class ConfigManager {
 
     public boolean isBagDisallowShulkerBoxes() {
         return config.getBoolean("bag.disallow-shulker-boxes", false);
+    }
+
+    public boolean isInvseeEnabled() {
+        return config.getBoolean("invsee.enabled", true);
+    }
+
+    public String getInvseeTitle() {
+        return config.getString("invsee.title", "&8Inventario &7({player})");
+    }
+
+    public boolean isInvseeAllowModification() {
+        return config.getBoolean("invsee.allow-modification", true);
+    }
+
+    public boolean isInvseePlaySound() {
+        return config.getBoolean("invsee.play-sound", true);
+    }
+
+    public boolean isInvseePreventInspectExempt() {
+        return config.getBoolean("invsee.prevent-inspect-exempt", true);
     }
 
     public boolean isSleepEnabled() {
@@ -707,6 +743,94 @@ public class ConfigManager {
 
     public String getAfkTabSuffix() {
         return config.getString("afk.tab-suffix", " &7[&cAFK&7]");
+    }
+
+    // ========================================================
+    //               GETTER MODULO RTP (RANDOM TP)
+    // ========================================================
+
+    public boolean isRtpEnabled() {
+        return config.getBoolean("rtp.enabled", true);
+    }
+
+    public int getRtpMinRadius() {
+        return config.getInt("rtp.min-radius", 500);
+    }
+
+    public int getRtpMaxRadius() {
+        return config.getInt("rtp.max-radius", 5000);
+    }
+
+    public int getRtpCenterX() {
+        return config.getInt("rtp.center-x", 0);
+    }
+
+    public int getRtpCenterZ() {
+        return config.getInt("rtp.center-z", 0);
+    }
+
+    public int getRtpTeleportDelay() {
+        return config.getInt("rtp.teleport-delay", 3);
+    }
+
+    public boolean isRtpCancelOnMove() {
+        return config.getBoolean("rtp.cancel-on-move", true);
+    }
+
+    public boolean isRtpCancelOnDamage() {
+        return config.getBoolean("rtp.cancel-on-damage", true);
+    }
+
+    public boolean isRtpPlaySound() {
+        return config.getBoolean("rtp.play-sound", true);
+    }
+
+    public boolean isRtpSpawnParticles() {
+        return config.getBoolean("rtp.spawn-particles", true);
+    }
+
+    public int getRtpMaxAttempts() {
+        return config.getInt("rtp.max-attempts", 15);
+    }
+
+    public List<String> getRtpAllowedWorlds() {
+        List<String> worlds = config.getStringList("rtp.allowed-worlds");
+        if (worlds == null || worlds.isEmpty()) {
+            return List.of("world");
+        }
+        return worlds;
+    }
+
+    // ========================================================
+    //               GETTER MODULO CESTINO COMUNE
+    // ========================================================
+
+    public boolean isCestinoEnabled() {
+        return config.getBoolean("cestino.enabled", true);
+    }
+
+    public int getCestinoRows() {
+        return config.getInt("cestino.rows", 6);
+    }
+
+    public int getCestinoResetIntervalMinutes() {
+        return config.getInt("cestino.reset-interval-minutes", 15);
+    }
+
+    public String getCestinoTitle() {
+        return config.getString("cestino.title", "&8🗑 &6Cestino Comune &7(Reset 15m)");
+    }
+
+    public boolean isCestinoBroadcastOnClear() {
+        return config.getBoolean("cestino.broadcast-on-clear", true);
+    }
+
+    public boolean isCestinoPlaySound() {
+        return config.getBoolean("cestino.play-sound", true);
+    }
+
+    public boolean isCestinoDisallowShulkerBoxes() {
+        return config.getBoolean("cestino.disallow-shulker-boxes", false);
     }
 }
 

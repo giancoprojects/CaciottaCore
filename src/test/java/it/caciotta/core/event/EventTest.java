@@ -158,15 +158,15 @@ public class EventTest {
         assertEquals(10000, event.getTarget());
         assertEquals("&6&lEvento Scavatore", event.getDisplayName());
 
-        // Simula la modifica dei campi da events.yml e reload
-        String newDateRaw = "30/10/2026 18:30";
-        ZonedDateTime newDate = ZonedDateTime.parse("2026-10-30T18:30:00+01:00[Europe/Rome]");
+        // Simula la modifica dei campi da events.yml e reload con una data futura
+        ZonedDateTime newDate = ZonedDateTime.now().plusDays(5);
+        String newDateRaw = newDate.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
         event.setStartDateRaw(newDateRaw);
         event.setStartDate(newDate);
         event.setTarget(15000);
         event.setDisplayName("&6&lSuper Scavatore");
 
-        assertEquals("30/10/2026 18:30", event.getStartDateRaw());
+        assertEquals(newDateRaw, event.getStartDateRaw());
         assertEquals(newDate, event.getStartDate());
         assertEquals(15000, event.getTarget());
         assertEquals("&6&lSuper Scavatore", event.getDisplayName());

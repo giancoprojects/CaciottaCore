@@ -88,24 +88,53 @@ tpback:
   notify-on-death: true
 
 # ========================================================
-#                SISTEMA NOVITÀ DEL SERVER (NEWS)
+#            SISTEMA RTP (RANDOM TELEPORT)
 # ========================================================
-news:
-  # Abilita o disabilita il sistema del libro delle novita
+rtp:
+  # Abilita o disabilita il comando /rtp
   enabled: true
-  # Se true, apre automaticamente il libro all'accesso dopo il login o la registrazione
-  open-on-login: true
-  # Titolo del libro (massimo 16 caratteri)
-  book-title: "&6Novita Server"
-  # Autore del libro
-  book-author: "&eCaciottaCore"
-  # Riproduci il suono di sfogliamento pagina all'apertura del libro
+  # Raggio minimo dal centro (blocchi)
+  min-radius: 500
+  # Raggio massimo dal centro (blocchi)
+  max-radius: 5000
+  # Coordinata X del centro della mappa (default: 0)
+  center-x: 0
+  # Coordinata Z del centro della mappa (default: 0)
+  center-z: 0
+  # Secondi di attesa prima del teletrasporto (0 per istantaneo)
+  teleport-delay: 3
+  # Annulla il teletrasporto se il giocatore si muove
+  cancel-on-move: true
+  # Annulla il teletrasporto se il giocatore subisce danno
+  cancel-on-damage: true
+  # Riproduci suono al teletrasporto
   play-sound: true
-  # Pagine del libro delle novita (supporta & e ritorni a capo \n).
-  # Se questa lista e vuota, il libro non viene aperto al login ("qualora ci fossero").
-  pages:
-    - "&6&l🧀 BENVENUTO!\n&8&m-------------------\n&7Ecco le novita recenti:\n\n&8» &e/tpback\n &7Torna al punto di morte!\n\n&8» &eModerazione:\n &7Ban, kick e mute attivi.\n\n&7Usa &e/aiuto &7per i comandi!"
-    - "&6&l🌟 AGGIORNAMENTI:\n&8&m-------------------\n&8» &eWarp Pubblici:\n &7Usa o crea con &e/setwarp&7!\n\n&8» &eSistema Sit:\n &7Siediti con &e/sit&7!\n\n&8» &eScoreboard:\n &7Statistiche in tempo reale!"
+  # Spawn particelle al teletrasporto
+  spawn-particles: true
+  # Numero massimo di tentativi di generazione chunk per trovare un punto sicuro
+  max-attempts: 15
+  # Mondi in cui e consentito eseguire il comando /rtp
+  allowed-worlds:
+    - "world"
+
+# ========================================================
+#            SISTEMA CESTINO COMUNE (TRASH BIN)
+# ========================================================
+cestino:
+  # Abilita o disabilita il comando /cestino
+  enabled: true
+  # Numero di righe del cestino comune (da 1 a 6 righe, default: 6 = 54 slot)
+  rows: 6
+  # Intervallo in minuti per lo svuotamento automatico (default: 15 minuti)
+  reset-interval-minutes: 15
+  # Titolo dell'inventario del cestino comune (supporta codici colore)
+  title: "&8🗑 &6Cestino Comune &7(Reset 15m)"
+  # Invia un annuncio globale in chat quando il cestino viene svuotato
+  broadcast-on-clear: true
+  # Riproduci suoni all'apertura, chiusura e svuotamento del cestino
+  play-sound: true
+  # Blocca l'inserimento di shulker box nel cestino
+  disallow-shulker-boxes: false
 
 # ========================================================
 #                    SISTEMA ZAINO (BAG)
@@ -126,6 +155,22 @@ bag:
   sound-close: "ITEM_BUNDLE_REMOVE_ONE"
   # Blocca l'inserimento di shulker box nello zaino per evitare storage infinito o bug NBT
   disallow-shulker-boxes: false
+
+# ========================================================
+#             SISTEMA ISPEZIONE INVENTARI (INVSEE)
+# ========================================================
+invsee:
+  # Abilita o disabilita il comando /invsee
+  enabled: true
+  # Titolo dell'inventario in modalita ispezione staff (supporta {player} e codici colore)
+  title: "&8Inventario &7({player})"
+  # Consente allo staff di modificare direttamente l'inventario del giocatore
+  # Se false, l'inventario viene aperto in sola visualizzazione (sola lettura)
+  allow-modification: true
+  # Riproduci suoni all'apertura dell'inventario o dell'Ender Chest
+  play-sound: true
+  # Blocca l'ispezione di utenti con permessi di immunita (caciottacore.invsee.exempt) a meno che lo staffer sia OP
+  prevent-inspect-exempt: true
 
 # ========================================================
 #                    SISTEMA SONNO (SLEEP)
@@ -534,19 +579,6 @@ messages:
     invalid-duration: "&cDurata specificata non valida: &e{error}"
     player-not-found: "&cIl giocatore &e{target} &cnon e online o non e stato trovato."
 
-  news:
-    no-news: "&cAl momento non sono presenti novita o aggiornamenti recenti del server."
-    reloaded: "&aConfigurazione del libro delle novita ricaricata con successo!"
-    usage-admin: "&cUso: &e/news &7(oppure &e/news toggle&7, &e/news reload&7)"
-    toggled-to-chat: "&eD'ora in poi all'accesso riceverai una notifica in chat con il link cliccabile anziche aprire il libro."
-    toggled-to-book: "&aD'ora in poi il libro delle novita si aprira automaticamente a ogni tuo accesso."
-    chat-notice: "&7Ci sono novita recenti sul server! &e&l[CLICCA QUI]&7 per aprirle."
-    chat-notice-hover: "&eClicca per aprire il libro delle novita!"
-    book-button-hide: "&c&l[Non mostrare all'accesso]"
-    book-button-hide-hover: "&7Clicca per ricevere solo un avviso in chat con link all'accesso."
-    book-button-show: "&a&l[Riattiva apertura all'accesso]"
-    book-button-show-hover: "&7Clicca per riattivare l'apertura automatica del libro all'accesso."
-
   bag:
     open-other: "&aStai visualizzando lo zaino di &e{target}&a."
     target-not-found: "&cGiocatore &e{target} &cnon trovato o mai entrato nel server."
@@ -625,6 +657,49 @@ messages:
     dungeon-teleported: "&d✨ Ti sei teletrasportato vicino a una struttura inesplorata! Preparati all'esplorazione!"
     dungeon-failed: "&cImpossibile trovare una struttura non esplorata nelle vicinanze. Riprova tra poco."
     dungeon-no-item: "&cNon hai alcun teletrasporto dungeon da riscattare! Comunica la tua scelta a uno staffer per fartelo assegnare."
+
+  rtp:
+    disabled: "&cIl comando /rtp e attualmente disabilitato sul server."
+    world-disabled: "&cNon puoi utilizzare il comando /rtp in questo mondo (&e{world}&c)!"
+    monthly-limit-reached: "&cHai gia utilizzato il tuo teletrasporto casuale mensile per &e{month}&c! Potrai riutilizzarlo a partire dal &e{reset_date}&c."
+    already-in-progress: "&cHai gia un teletrasporto o una ricerca in corso! Attendi il completamento."
+    teleport-countdown: "&7Teletrasporto casuale tra &e{seconds} secondi&7... Non muoverti!"
+    teleport-cancelled-move: "&cTeletrasporto casuale annullato perche ti sei mosso!"
+    teleport-cancelled-damage: "&cTeletrasporto casuale annullato perche hai subito danno!"
+    searching: "&7Ricerca di un punto sicuro e generazione del chunk in corso..."
+    no-safe-location: "&cImpossibile trovare un punto sicuro dopo vari tentativi. Riprova tra qualche istante! Il tuo utilizzo mensile non e stato consumato."
+    teleport-success: "&aTeletrasportato con successo in un punto casuale del mondo! &7(&eX: {x}, Y: {y}, Z: {z}&7) &8- &7(Prossimo riutilizzo: &e{reset_date}&7)"
+    status-available: "&aIl tuo /rtp mensile e &2DISPONIBILE&a per il mese di &e{month}&a! &7Usa &e/rtp &7per teletrasportarti."
+    status-used: "&cHai gia utilizzato il tuo /rtp per il mese di &e{month}&c. Prossimo reset: &e{reset_date}&c."
+    admin-reset-success: "&aUso mensile di /rtp resettato con successo per il giocatore &e{player}&a!"
+    admin-reset-all-success: "&aUsi mensili di /rtp resettati con successo per &etutti i giocatori&a!"
+    admin-reload-success: "&aConfigurazione e dati del modulo RTP ricaricati con successo!"
+    admin-usage: "&cUso admin: &e/{label} admin <reset|resetall|reload> [giocatore]"
+    player-not-found: "&cGiocatore &e{player} &cnon trovato o offline."
+
+  cestino:
+    disabled: "&cIl cestino comune e' attualmente disabilitato sul server."
+    opened: "&7Hai aperto il &6cestino comune&7. Puoi depositare o prelevare liberamente oggetti!"
+    cannot-open-dead: "&cNon puoi aprire il cestino mentre sei morto!"
+    countdown: "&6🗑 &7Il cestino comune verra' svuotato tra &e{time}&7."
+    cleared-broadcast: "&6🗑 &eIl cestino comune e' stato svuotato! I contenuti sono stati eliminati. Prossimo reset tra &6{minutes} minuti&e."
+    cleared-viewer: "&6🗑 &cIl cestino comune e' appena stato svuotato! Tutti gli oggetti sono stati eliminati."
+    cleared-admin: "&aHai svuotato manualmente il cestino comune con successo! Il timer di 15 minuti e' stato riavviato."
+    reloaded: "&aConfigurazione e timer del cestino comune ricaricati con successo!"
+    item-forbidden: "&cNon puoi inserire questo oggetto (&e{item}&c) nel cestino!"
+    usage-admin: "&cUso admin: &e/{label} <clear|reload>"
+
+  invsee:
+    disabled: "&cIl comando /invsee e attualmente disabilitato sul server."
+    usage: "&cUso corretto: &e/{label} <giocatore> [readonly|ender]"
+    player-not-found: "&cIl giocatore &e{target} &cnon e online o non e stato trovato."
+    cannot-inspect-self: "&cNon puoi ispezionare il tuo stesso inventario con questo comando!"
+    target-exempt: "&cNon puoi ispezionare l'inventario di &e{target} &cperche e un utente protetto!"
+    opened: "&7Apertura inventario di &e{target}&7 in tempo reale..."
+    opened-readonly: "&7Apertura inventario di &e{target} &7(modalita sola lettura)..."
+    opened-ender: "&7Apertura Ender Chest personale di &e{target}&7..."
+    cannot-modify: "&cQuesto inventario e in sola lettura! Non puoi modificare gli oggetti."
+    target-disconnected: "&cIl giocatore &e{target} &csi e disconnesso dal server."
 
 
 

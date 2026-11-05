@@ -359,6 +359,16 @@ public class ScoreboardManager {
             status = plugin.getAuthManager().isAuthenticated(player) ? "&aAutenticato" : "&cNon Autenticato";
         }
 
+        String rtpStatus = "&7N/D";
+        if (plugin.getRtpManager() != null) {
+            rtpStatus = plugin.getRtpManager().canUseRtp(player) ? "&aDisponibile" : "&cUtilizzato";
+        }
+
+        String cestinoTimer = "&7N/D";
+        if (plugin.getCestinoManager() != null) {
+            cestinoTimer = plugin.getCestinoManager().getFormattedCountdown();
+        }
+
         java.time.ZoneId zoneId = configManager.getZoneId();
         String date = LocalDate.now(zoneId).format(DATE_FORMATTER);
         String time = LocalTime.now(zoneId).format(TIME_FORMATTER);
@@ -415,6 +425,8 @@ public class ScoreboardManager {
                 .replace("{max_homes}", String.valueOf(maxHomes))
                 .replace("{warps}", String.valueOf(warpsCount))
                 .replace("{status}", status)
+                .replace("{rtp_status}", rtpStatus)
+                .replace("{cestino_timer}", cestinoTimer)
                 .replace("{date}", date)
                 .replace("{time}", time)
                 .replace("{timezone}", zoneId.getId())

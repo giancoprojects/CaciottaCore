@@ -1,0 +1,43 @@
+# ========================================================
+#           CONFIGURAZIONE SISTEMA NOVITÀ (NEWS)
+# ========================================================
+# File di configurazione indipendente per il libro delle novità (/news).
+# Supporta colori con '&' (es. &a, &e, &6), codice esadecimale e placeholder.
+
+# Abilita o disabilita l'intero sistema del libro delle novita
+enabled: true
+
+# Se true, apre automaticamente il libro all'accesso dopo il login o la registrazione
+open-on-login: true
+
+# Titolo del libro (massimo 16 caratteri per standard Minecraft)
+book-title: "&6Novita Server"
+
+# Autore del libro
+book-author: "&eCaciottaCore"
+
+# Riproduci il suono di sfogliamento pagina all'apertura del libro
+play-sound: true
+
+# Pagine del libro delle novita (supporta codici colore '&' e ritorni a capo '\n').
+# Se questa lista e vuota, il libro non viene aperto al login.
+pages:
+  - "&6&l🧀 BENVENUTO!\n&8&m-------------------\n&7Ecco le novita recenti:\n\n&8» &e/tpback\n &7Torna al punto di morte!\n\n&8» &eModerazione:\n &7Ban, kick e mute attivi.\n\n&7Usa &e/aiuto &7per i comandi!"
+  - "&6&l🌟 AGGIORNAMENTI:\n&8&m-------------------\n&8» &eWarp Pubblici:\n &7Usa o crea con &e/setwarp&7!\n\n&8» &eSistema Sit:\n &7Siediti con &e/sit&7!\n\n&8» &eScoreboard:\n &7Statistiche in tempo reale!"
+
+# ========================================================
+#                 MESSAGGI E NOTIFICHE
+# ========================================================
+messages:
+  no-news: "&cAl momento non sono presenti novita o aggiornamenti recenti del server."
+  reloaded: "&aConfigurazione del libro delle novita ricaricata con successo!"
+  usage-admin: "&cUso: &e/news &7(oppure &e/news toggle&7, &e/news reload&7)"
+  toggled-to-chat: "&eD'ora in poi all'accesso riceverai una notifica in chat con il link cliccabile anziche aprire il libro."
+  toggled-to-book: "&aD'ora in poi il libro delle novita si aprira automaticamente a ogni tuo accesso."
+  chat-notice: "&7Ci sono novita recenti sul server! &e&l[CLICCA QUI]&7 per aprirle."
+  chat-notice-hover: "&eClicca per aprire il libro delle novita!"
+  book-button-hide: "&c&l[Non mostrare all'accesso]"
+  book-button-hide-hover: "&7Clicca per ricevere solo un avviso in chat con link all'accesso."
+  book-button-show: "&a&l[Riattiva apertura all'accesso]"
+  book-button-show-hover: "&7Clicca per riattivare l'apertura automatica del libro all'accesso."
+

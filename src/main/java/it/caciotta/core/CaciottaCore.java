@@ -4,14 +4,17 @@ import it.caciotta.core.afk.*;
 import it.caciotta.core.auth.*;
 import it.caciotta.core.bag.*;
 import it.caciotta.core.broadcast.*;
+import it.caciotta.core.cestino.*;
 import it.caciotta.core.command.ReloadCommand;
 import it.caciotta.core.config.ConfigManager;
 import it.caciotta.core.event.*;
 import it.caciotta.core.help.*;
 import it.caciotta.core.home.*;
+import it.caciotta.core.invsee.*;
 import it.caciotta.core.rank.*;
 import it.caciotta.core.moderation.*;
 import it.caciotta.core.news.*;
+import it.caciotta.core.rtp.*;
 import it.caciotta.core.scoreboard.*;
 import it.caciotta.core.sit.*;
 import it.caciotta.core.sleep.*;
@@ -40,9 +43,12 @@ public final class CaciottaCore extends JavaPlugin {
     private WarpManager warpManager;
     private TpaManager tpaManager;
     private TpBackManager tpBackManager;
+    private RtpManager rtpManager;
     private ModerationManager moderationManager;
     private NewsManager newsManager;
     private BagManager bagManager;
+    private CestinoManager cestinoManager;
+    private InvseeManager invseeManager;
     private ScoreboardManager scoreboardManager;
     private SleepManager sleepManager;
     private AfkManager afkManager;
@@ -63,6 +69,8 @@ public final class CaciottaCore extends JavaPlugin {
         // Inizializza gestori logica
         this.newsManager = new NewsManager(this);
         this.bagManager = new BagManager(this);
+        this.cestinoManager = new CestinoManager(this);
+        this.invseeManager = new InvseeManager(this);
         this.rankManager = new RankManager(this);
         this.sitManager = new SitManager(this);
         this.authManager = new AuthManager(this);
@@ -70,6 +78,7 @@ public final class CaciottaCore extends JavaPlugin {
         this.warpManager = new WarpManager(this);
         this.tpaManager = new TpaManager(this);
         this.tpBackManager = new TpBackManager(this);
+        this.rtpManager = new RtpManager(this);
         this.moderationManager = new ModerationManager(this);
         this.scoreboardManager = new ScoreboardManager(this);
         this.sleepManager = new SleepManager(this);
@@ -87,9 +96,12 @@ public final class CaciottaCore extends JavaPlugin {
         pm.registerEvents(new WarpListener(this), this);
         pm.registerEvents(new TpaListener(this), this);
         pm.registerEvents(new TpBackListener(this), this);
+        pm.registerEvents(new RtpListener(this), this);
         pm.registerEvents(new ModerationListener(this), this);
         pm.registerEvents(new ScoreboardListener(this), this);
         pm.registerEvents(new BagListener(this), this);
+        pm.registerEvents(new CestinoListener(this), this);
+        pm.registerEvents(new InvseeListener(this, invseeManager), this);
         pm.registerEvents(new SleepListener(this), this);
         pm.registerEvents(new AfkListener(this), this);
 
@@ -184,6 +196,14 @@ public final class CaciottaCore extends JavaPlugin {
             tpBackCmd.setTabCompleter(tpBackCommand);
         }
 
+        // Registrazione Comando RTP
+        RtpCommand rtpCommand = new RtpCommand(this);
+        PluginCommand rtpCmd = getCommand("rtp");
+        if (rtpCmd != null) {
+            rtpCmd.setExecutor(rtpCommand);
+            rtpCmd.setTabCompleter(rtpCommand);
+        }
+
         // Registrazione Comandi Moderazione
         BanCommand banCommand = new BanCommand(this);
         PluginCommand banCmd = getCommand("ban");
@@ -248,6 +268,22 @@ public final class CaciottaCore extends JavaPlugin {
         if (bagCmd != null) {
             bagCmd.setExecutor(bagCommand);
             bagCmd.setTabCompleter(bagCommand);
+        }
+
+        // Registrazione Comando Cestino
+        CestinoCommand cestinoCommand = new CestinoCommand(this);
+        PluginCommand cestinoCmd = getCommand("cestino");
+        if (cestinoCmd != null) {
+            cestinoCmd.setExecutor(cestinoCommand);
+            cestinoCmd.setTabCompleter(cestinoCommand);
+        }
+
+        // Registrazione Comando Invsee
+        InvseeCommand invseeCommand = new InvseeCommand(this);
+        PluginCommand invseeCmd = getCommand("invsee");
+        if (invseeCmd != null) {
+            invseeCmd.setExecutor(invseeCommand);
+            invseeCmd.setTabCompleter(invseeCommand);
         }
 
         // Registrazione Comandi Scoreboard
@@ -376,6 +412,9 @@ public final class CaciottaCore extends JavaPlugin {
         if (tpBackManager != null) {
             tpBackManager.reload();
         }
+        if (rtpManager != null) {
+            rtpManager.reload();
+        }
         if (moderationManager != null) {
             moderationManager.reload();
         }
@@ -384,6 +423,12 @@ public final class CaciottaCore extends JavaPlugin {
         }
         if (bagManager != null) {
             bagManager.reload();
+        }
+        if (cestinoManager != null) {
+            cestinoManager.reload();
+        }
+        if (invseeManager != null) {
+            invseeManager.reload();
         }
         if (sleepManager != null) {
             sleepManager.reload();
@@ -429,6 +474,9 @@ public final class CaciottaCore extends JavaPlugin {
         if (tpBackManager != null) {
             tpBackManager.cleanup();
         }
+        if (rtpManager != null) {
+            rtpManager.cleanup();
+        }
         if (moderationManager != null) {
             moderationManager.cleanup();
         }
@@ -437,6 +485,12 @@ public final class CaciottaCore extends JavaPlugin {
         }
         if (bagManager != null) {
             bagManager.cleanup();
+        }
+        if (cestinoManager != null) {
+            cestinoManager.cleanup();
+        }
+        if (invseeManager != null) {
+            invseeManager.cleanup();
         }
         if (sleepManager != null) {
             sleepManager.cleanup();
@@ -482,6 +536,10 @@ public final class CaciottaCore extends JavaPlugin {
         return tpBackManager;
     }
 
+    public RtpManager getRtpManager() {
+        return rtpManager;
+    }
+
     public ModerationManager getModerationManager() {
         return moderationManager;
     }
@@ -492,6 +550,14 @@ public final class CaciottaCore extends JavaPlugin {
 
     public BagManager getBagManager() {
         return bagManager;
+    }
+
+    public CestinoManager getCestinoManager() {
+        return cestinoManager;
+    }
+
+    public InvseeManager getInvseeManager() {
+        return invseeManager;
     }
 
     public ScoreboardManager getScoreboardManager() {

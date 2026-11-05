@@ -55,6 +55,16 @@ public final class MessageUtil {
     }
 
     /**
+     * Invia un messaggio broadcast formattato a tutti i giocatori online e alla console.
+     */
+    public static void broadcast(String message) {
+        if (message == null || message.isEmpty()) {
+            return;
+        }
+        org.bukkit.Bukkit.broadcast(format(message));
+    }
+
+    /**
      * Invia un'actionbar al giocatore.
      */
     public static void sendActionBar(Player player, String message) {

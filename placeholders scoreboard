@@ -16,6 +16,8 @@
 {event_player_score}: Punteggio personale del giocatore.
 {event_player_rank}: Posizione personale in classifica (1°, 2°, 3°, ...).
 {event_timer}: Countdown automatico all'avvio o alla chiusura.
+{rtp_status}: Stato disponibilità teletrasporto casuale mensile (Disponibile / Utilizzato).
+{cestino_timer}: Countdown rimanente prima del prossimo svuotamento del cestino comune (es. 14:32).
 
 #Scoreboard evento
 - '&7&m-------------------'
