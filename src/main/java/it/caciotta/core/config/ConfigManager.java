@@ -669,6 +669,10 @@ public class ConfigManager {
         return config.getBoolean("invsee.prevent-inspect-exempt", true);
     }
 
+    public boolean isInvseeLoadPlayerSkin() {
+        return config.getBoolean("invsee.load-player-skin", false);
+    }
+
     public boolean isSleepEnabled() {
         return config.getBoolean("sleep.enabled", true);
     }

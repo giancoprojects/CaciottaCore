@@ -87,6 +87,8 @@ public class InvseeTest {
         assertTrue(config.getBoolean("invsee.allow-modification"), "allow-modification deve essere true di default");
         assertTrue(config.getBoolean("invsee.play-sound"), "play-sound deve essere true di default");
         assertTrue(config.getBoolean("invsee.prevent-inspect-exempt"), "prevent-inspect-exempt deve essere true di default");
+        assertTrue(config.contains("invsee.load-player-skin"), "config.yml deve contenere invsee.load-player-skin");
+        assertFalse(config.getBoolean("invsee.load-player-skin"), "load-player-skin deve essere false di default per prevenire timeout Mojang su server offline");
 
         assertNotNull(config.getString("messages.invsee.usage"), "Messaggio usage mancante in config.yml");
         assertNotNull(config.getString("messages.invsee.player-not-found"), "Messaggio player-not-found mancante in config.yml");
@@ -94,6 +96,14 @@ public class InvseeTest {
         assertNotNull(config.getString("messages.invsee.target-exempt"), "Messaggio target-exempt mancante in config.yml");
         assertNotNull(config.getString("messages.invsee.opened"), "Messaggio opened mancante in config.yml");
         assertNotNull(config.getString("messages.invsee.cannot-modify"), "Messaggio cannot-modify mancante in config.yml");
+    }
+
+    @Test
+    public void testOfflineUuidDetection() {
+        // Simula l'UUID dell'errore riportato dall'utente
+        UUID offlineUuid = UUID.fromString("00063cfb-8b1b-3c14-b024-efdce7f02719");
+        assertEquals(3, offlineUuid.version(), "L'UUID offline deve essere di versione 3");
+        assertNotEquals(4, offlineUuid.version(), "Un account non-premium non deve essere trattato come UUID v4 Mojang");
     }
 }
 

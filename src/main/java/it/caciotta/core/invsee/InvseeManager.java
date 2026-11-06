@@ -230,12 +230,25 @@ public class InvseeManager {
 
     /**
      * Aggiorna la testa e le statistiche dinamiche del giocatore.
+     * Riutilizza l'oggetto esistente per non riapplicare la risoluzione della skin e prevenire richieste di rete ripetute.
      */
     public void updatePlayerInfo(Inventory gui, Player target) {
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        if (meta != null) {
-            meta.setOwningPlayer(target);
+        if (gui == null || target == null) {
+            return;
+        }
+
+        ItemStack skull = gui.getItem(SLOT_INFO);
+        boolean isNew = false;
+        if (skull == null || skull.getType() != Material.PLAYER_HEAD) {
+            skull = new ItemStack(Material.PLAYER_HEAD);
+            isNew = true;
+        }
+
+        ItemMeta itemMeta = skull.getItemMeta();
+        if (itemMeta instanceof SkullMeta meta) {
+            if (isNew) {
+                applyPlayerSkin(meta, target);
+            }
             meta.displayName(MessageUtil.format("&6&lScheda Giocatore: &e" + target.getName()));
             List<Component> lore = new ArrayList<>();
             lore.add(MessageUtil.format("&7Vita: &a" + (int) Math.ceil(target.getHealth()) + "&7/&a" + (int) target.getMaxHealth() + " &c❤"));
@@ -252,6 +265,40 @@ public class InvseeManager {
             skull.setItemMeta(meta);
         }
         gui.setItem(SLOT_INFO, skull);
+    }
+
+    /**
+     * Applica la skin alla testa del giocatore in modo sicuro per server offline, cracked o con connessione limitata.
+     */
+    private void applyPlayerSkin(SkullMeta meta, Player target) {
+        if (meta == null || target == null) {
+            return;
+        }
+
+        try {
+            // 1. Se il profilo locale possiede gia le texture (es. da SkinRestorer, BungeeCord o cache Paper), usale direttamente
+            com.destroystokyo.paper.profile.PlayerProfile profile = target.getPlayerProfile();
+            if (profile != null && profile.hasTextures()) {
+                meta.setPlayerProfile(profile);
+                return;
+            }
+
+            // 2. Se non ha texture in memoria, contatta Mojang SOLO se:
+            // - il server e in online-mode
+            // - l'UUID e v4 (account premium registrato su Mojang)
+            // - l'opzione load-player-skin e abilitata in config.yml
+            // In tutti gli altri casi (server offline, account cracked UUID v3, opzione disabilitata)
+            // NON inviamo richieste esterne a Mojang per evitare blocchi, freeze e warning di Read timed out.
+            boolean isOnlineMode = Bukkit.getOnlineMode();
+            boolean isPremiumUuid = target.getUniqueId().version() == 4;
+            boolean loadSkinEnabled = configManager.isInvseeLoadPlayerSkin();
+
+            if (isOnlineMode && isPremiumUuid && loadSkinEnabled) {
+                meta.setOwningPlayer(target);
+            }
+        } catch (Throwable ignored) {
+            // Fallback resiliente: se authlib o Mojang sollevano eccezioni, non bloccare l'interfaccia
+        }
     }
 
     private ItemStack createPane(Material material, String name) {

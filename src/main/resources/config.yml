@@ -171,6 +171,9 @@ invsee:
   play-sound: true
   # Blocca l'ispezione di utenti con permessi di immunita (caciottacore.invsee.exempt) a meno che lo staffer sia OP
   prevent-inspect-exempt: true
+  # Carica la skin della testa del giocatore contattando i server Mojang per gli account premium
+  # Predefinito: false (consigliato su server offline/cracked o per prevenire lag e timeout con i server Mojang)
+  load-player-skin: false
 
 # ========================================================
 #                    SISTEMA SONNO (SLEEP)
