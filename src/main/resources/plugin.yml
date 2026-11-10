@@ -58,6 +58,11 @@ commands:
     usage: /changepassword <vecchiaPassword> <nuovaPassword>
     aliases: [cp, changepass]
     permission: caciottacore.auth.changepassword
+  logout:
+    description: Disconnette il tuo account richiedendo nuovamente il login.
+    usage: /logout
+    aliases: [esci, sconnect]
+    permission: caciottacore.auth.logout
   authadmin:
     description: Gestione amministrativa del sistema di login.
     usage: /authadmin <unregister|reload> [giocatore]
@@ -288,8 +293,12 @@ permissions:
     default: op
     children:
       caciottacore.auth.changepassword: true
+      caciottacore.auth.logout: true
   caciottacore.auth.changepassword:
     description: Permette di cambiare la propria password.
+    default: true
+  caciottacore.auth.logout:
+    description: Permette di disconnettere il proprio account con /logout.
     default: true
   caciottacore.tpa.*:
     description: Accesso a tutti i comandi e funzionalita TPA.

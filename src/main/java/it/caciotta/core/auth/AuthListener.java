@@ -33,7 +33,7 @@ public class AuthListener implements Listener {
         this.configManager = plugin.getConfigManager();
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent event) {
         authManager.onPlayerJoin(event.getPlayer());
     }
@@ -58,6 +58,12 @@ public class AuthListener implements Listener {
                 lock.setPitch(to.getPitch());
                 event.setTo(lock);
             }
+            return;
+        }
+
+        // Rimuovi la protezione dai danni da caduta quando il giocatore autenticato tocca terra
+        if (player.isOnGround() && authManager.hasFallProtection(player.getUniqueId())) {
+            authManager.removeFallProtection(player.getUniqueId());
         }
     }
 
@@ -127,7 +133,22 @@ public class AuthListener implements Listener {
         if (event.getEntity() instanceof Player player) {
             if (!authManager.isAuthenticated(player)) {
                 event.setCancelled(true);
+                return;
             }
+
+            // Protezione dai danni da caduta se il giocatore era sospeso in aria prima del login
+            if (event.getCause() == EntityDamageEvent.DamageCause.FALL && authManager.hasFallProtection(player.getUniqueId())) {
+                event.setCancelled(true);
+                authManager.removeFallProtection(player.getUniqueId());
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        if (!authManager.isAuthenticated(player)) {
+            authManager.applyRestrictions(player);
         }
     }
 

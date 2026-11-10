@@ -4,6 +4,8 @@ import it.caciotta.core.CaciottaCore;
 import it.caciotta.core.config.ConfigManager;
 import it.caciotta.core.util.MessageUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -32,6 +34,13 @@ public class AuthManager {
     private final Map<UUID, Integer> failedAttempts = new ConcurrentHashMap<>();
     private final Map<UUID, BukkitTask> timeoutTasks = new ConcurrentHashMap<>();
     private final Map<UUID, BukkitTask> reminderTasks = new ConcurrentHashMap<>();
+
+    // Traccia lo stato originale di volo e hovering dei giocatori prima dell'autenticazione
+    private final Map<UUID, Boolean> previousAllowFlight = new ConcurrentHashMap<>();
+    private final Map<UUID, Boolean> previousFlying = new ConcurrentHashMap<>();
+
+    // Timestamp di scadenza per la protezione da caduta post-login
+    private final Map<UUID, Long> fallProtectedPlayers = new ConcurrentHashMap<>();
 
     public enum LoginResult {
         SUCCESS,
@@ -235,6 +244,98 @@ public class AuthManager {
         return unregister(uuid);
     }
 
+    /**
+     * Esegue il logout volontario del giocatore:
+     * invalida la sessione IP (last_login = 0), chiude eventuali inventari aperti,
+     * cancella eventuali teletrasporti pendenti, reimposta stati sit/afk/sleep,
+     * riapplica le restrizioni di movimento/volo/effetti, riavvia i promemoria e aggiorna la scoreboard.
+     *
+     * @param player il giocatore che effettua il logout
+     * @return true se il logout ha avuto successo, false se il giocatore non era online o autenticato
+     */
+    public boolean logout(Player player) {
+        if (player == null || !player.isOnline()) {
+            return false;
+        }
+        UUID uuid = player.getUniqueId();
+        if (!isAuthenticated(uuid)) {
+            return false;
+        }
+
+        // Rimuovi dai giocatori autenticati e ripulisci tentativi e protezioni attive
+        authenticatedPlayers.remove(uuid);
+        failedAttempts.remove(uuid);
+        fallProtectedPlayers.remove(uuid);
+
+        // Invalida la sessione IP impostando last_login a 0
+        File file = getPlayerFile(uuid);
+        if (file.exists()) {
+            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+            yaml.set("last_login", 0L);
+            try {
+                yaml.save(file);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.WARNING, "Impossibile aggiornare last_login durante il logout per " + player.getName(), e);
+            }
+        }
+
+        // Chiudi qualsiasi inventario aperto (es. chest, zaino, cestino, invsee)
+        player.closeInventory();
+
+        // Annulla eventuali teletrasporti in sospeso
+        if (plugin.getHomeManager() != null) {
+            plugin.getHomeManager().cancelPendingTeleport(uuid, false, null);
+        }
+        if (plugin.getWarpManager() != null) {
+            plugin.getWarpManager().cancelPendingTeleport(uuid, false, null);
+        }
+        if (plugin.getTpaManager() != null) {
+            plugin.getTpaManager().cancelPendingTeleport(uuid, false, null);
+        }
+        if (plugin.getTpBackManager() != null) {
+            plugin.getTpBackManager().cancelPendingTeleport(uuid, false, null);
+        }
+        if (plugin.getRtpManager() != null) {
+            plugin.getRtpManager().cancelPendingTeleport(uuid, false, null);
+        }
+
+        // Sveglia il giocatore se sta dormendo
+        if (plugin.getSleepManager() != null && plugin.getSleepManager().isSleeping(player)) {
+            plugin.getSleepManager().wakeUp(player, false);
+        }
+
+        // Fai alzare il giocatore se e seduto o rimuovilo da veicoli
+        if (plugin.getSitManager() != null && plugin.getSitManager().isSitting(player)) {
+            plugin.getSitManager().dismount(player, false);
+        } else if (player.isInsideVehicle()) {
+            player.leaveVehicle();
+        }
+
+        // Esci dalla modalita AFK se attiva
+        if (plugin.getAfkManager() != null && plugin.getAfkManager().isAfk(player)) {
+            plugin.getAfkManager().removeAfk(player, false);
+        }
+
+        // Riapplica le restrizioni (volo temporaneo anticaduta/fly kick, cecita, lentezza)
+        applyRestrictions(player);
+
+        // Riavvia i promemoria di login e il task di timeout
+        startTasks(player);
+
+        // Aggiorna la scoreboard
+        if (plugin.getScoreboardManager() != null) {
+            plugin.getScoreboardManager().update(player);
+        }
+
+        // Suono di disconnessione
+        try {
+            player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1.0f, 1.0f);
+        } catch (Exception ignored) {
+        }
+
+        return true;
+    }
+
     public void onPlayerJoin(Player player) {
         UUID uuid = player.getUniqueId();
         authenticatedPlayers.remove(uuid);
@@ -266,6 +367,12 @@ public class AuthManager {
             }
         }
 
+        // Protezione anticaduta nel vuoto: se il giocatore si trova sotto il livello minimo del mondo, riportalo allo spawn
+        if (player.getLocation().getY() < player.getWorld().getMinHeight()) {
+            Location spawn = player.getWorld().getSpawnLocation();
+            player.teleport(spawn);
+        }
+
         applyRestrictions(player);
         startTasks(player);
     }
@@ -275,6 +382,19 @@ public class AuthManager {
         authenticatedPlayers.remove(uuid);
         failedAttempts.remove(uuid);
         cancelTasks(uuid);
+        fallProtectedPlayers.remove(uuid);
+
+        // Ripristina lo stato di volo originale del giocatore prima del salvataggio su disco
+        Boolean wasAllowFlight = previousAllowFlight.remove(uuid);
+        Boolean wasFlying = previousFlying.remove(uuid);
+        if (wasAllowFlight != null) {
+            player.setAllowFlight(wasAllowFlight);
+        }
+        if (wasFlying != null && Boolean.TRUE.equals(wasAllowFlight)) {
+            player.setFlying(wasFlying);
+        } else {
+            player.setFlying(false);
+        }
     }
 
     private void markAuthenticated(Player player) {
@@ -309,6 +429,23 @@ public class AuthManager {
     }
 
     public void applyRestrictions(Player player) {
+        UUID uuid = player.getUniqueId();
+
+        // Salva lo stato originale di volo prima dell'applicazione del volo temporaneo di sicurezza
+        if (!previousAllowFlight.containsKey(uuid)) {
+            previousAllowFlight.put(uuid, player.getAllowFlight());
+            previousFlying.put(uuid, player.isFlying());
+        }
+
+        // Abilita il volo temporaneo per evitare che il server espella il giocatore per "flying"
+        // se si trova a mezz'aria o se non sono presenti blocchi sotto la sua posizione
+        if (configManager.isAuthTemporaryFlightEnabled()) {
+            player.setAllowFlight(true);
+            player.setFlying(true);
+        }
+
+        player.setFallDistance(0f);
+
         if (configManager.isBlindnessEffectEnabled()) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0, false, false, false));
         }
@@ -318,8 +455,39 @@ public class AuthManager {
     }
 
     public void removeRestrictions(Player player) {
+        UUID uuid = player.getUniqueId();
         player.removePotionEffect(PotionEffectType.BLINDNESS);
         player.removePotionEffect(PotionEffectType.SLOWNESS);
+
+        if (configManager.isAuthTemporaryFlightEnabled()) {
+            Boolean wasAllowFlight = previousAllowFlight.remove(uuid);
+            Boolean wasFlying = previousFlying.remove(uuid);
+
+            if (wasAllowFlight != null) {
+                player.setAllowFlight(wasAllowFlight);
+            } else {
+                GameMode gm = player.getGameMode();
+                player.setAllowFlight(gm == GameMode.CREATIVE || gm == GameMode.SPECTATOR);
+            }
+
+            if (wasFlying != null && Boolean.TRUE.equals(wasAllowFlight)) {
+                player.setFlying(wasFlying);
+            } else {
+                player.setFlying(false);
+            }
+        } else {
+            previousAllowFlight.remove(uuid);
+            previousFlying.remove(uuid);
+        }
+
+        // Azzera la distanza di caduta accumulata durante la sosta
+        player.setFallDistance(0f);
+
+        // Attiva la protezione temporanea da danni da caduta
+        int protectionSec = configManager.getAuthFallProtectionSeconds();
+        if (protectionSec > 0) {
+            fallProtectedPlayers.put(uuid, System.currentTimeMillis() + (protectionSec * 1000L));
+        }
     }
 
     private void startTasks(Player player) {
@@ -392,6 +560,22 @@ public class AuthManager {
         return Math.max(0, configManager.getMaxLoginAttempts() - current);
     }
 
+    public boolean hasFallProtection(UUID uuid) {
+        Long expiresAt = fallProtectedPlayers.get(uuid);
+        if (expiresAt == null) {
+            return false;
+        }
+        if (System.currentTimeMillis() > expiresAt) {
+            fallProtectedPlayers.remove(uuid);
+            return false;
+        }
+        return true;
+    }
+
+    public void removeFallProtection(UUID uuid) {
+        fallProtectedPlayers.remove(uuid);
+    }
+
     public void cleanup() {
         for (BukkitTask task : reminderTasks.values()) {
             task.cancel();
@@ -401,6 +585,22 @@ public class AuthManager {
         }
         reminderTasks.clear();
         timeoutTasks.clear();
+
+        for (UUID uuid : previousAllowFlight.keySet()) {
+            Player p = Bukkit.getPlayer(uuid);
+            if (p != null && p.isOnline()) {
+                Boolean wasAllowFlight = previousAllowFlight.get(uuid);
+                p.setAllowFlight(wasAllowFlight != null && wasAllowFlight);
+                Boolean wasFlying = previousFlying.get(uuid);
+                p.setFlying(wasFlying != null && wasFlying);
+                p.removePotionEffect(PotionEffectType.BLINDNESS);
+                p.removePotionEffect(PotionEffectType.SLOWNESS);
+            }
+        }
+        previousAllowFlight.clear();
+        previousFlying.clear();
+        fallProtectedPlayers.clear();
+
         authenticatedPlayers.clear();
         failedAttempts.clear();
     }

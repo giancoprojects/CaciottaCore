@@ -73,6 +73,7 @@ public class ConfigUpdateTest {
         assertTrue(savedContent.contains("rtp:"), "Il file salvato deve contenere la sezione rtp");
         assertTrue(savedContent.contains("cestino:"), "Il file salvato deve contenere la sezione cestino");
         assertTrue(savedContent.contains("invsee:"), "Il file salvato deve contenere la sezione invsee");
+        assertTrue(savedContent.contains("temporary-flight:"), "Il file salvato deve contenere temporary-flight");
         assertTrue(savedContent.contains("teleport-delay: 5"), "Il valore personalizzato dell'utente (5) deve essere preservato");
         assertTrue(savedContent.contains("Old"), "Il prefisso personalizzato dell'utente deve essere preservato");
     }

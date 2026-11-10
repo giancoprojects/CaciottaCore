@@ -78,7 +78,9 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
                 .append(createCategoryButton("AFK", "afk"))
                 .append(Component.text(" ", NamedTextColor.DARK_GRAY))
-                .append(createCategoryButton("Eventi", "eventi"));
+                .append(createCategoryButton("Eventi", "eventi"))
+                .append(Component.text(" ", NamedTextColor.DARK_GRAY))
+                .append(createCategoryButton("Auth", "auth"));
 
         if (isAdmin) {
             nav = nav.append(Component.text(" ", NamedTextColor.DARK_GRAY))
@@ -126,6 +128,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(createCmd("/news", "Visualizza il libro con le novita recenti del server", "/news", false));
         sender.sendMessage(createCmd("/orario", "Visualizza la data e l'orario attuale del server", "/orario", false));
         sender.sendMessage(createCmd("/changepassword <vecchia> <nuova>", "Modifica la password del tuo account", "/changepassword ", true));
+        sender.sendMessage(createCmd("/logout", "Disconnetti il tuo account di gioco", "/logout", false));
 
         // Sezione Rank
         sender.sendMessage(Component.empty());
@@ -354,6 +357,18 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
                 }
                 sender.sendMessage(MessageUtil.format("&7Nota: e obbligatorio confermare la partecipazione per far conteggiare i blocchi!"));
             }
+            case "auth", "login", "register", "logout" -> {
+                sender.sendMessage(MessageUtil.format("&6🔐 Dettagli Autenticazione & Sicurezza:"));
+                sender.sendMessage(createCmd("/register <password> <conferma>", "Registra il tuo account protetto", "/register ", true));
+                sender.sendMessage(createCmd("/login <password>", "Accedi al tuo account", "/login ", true));
+                sender.sendMessage(createCmd("/changepassword <vecchia> <nuova>", "Modifica la password attuale", "/changepassword ", true));
+                sender.sendMessage(createCmd("/logout", "Disconnetti il tuo account di gioco", "/logout", false));
+                if (isAdmin) {
+                    sender.sendMessage(createAdminCmd("/authadmin unregister <player>", "Rimuove la registrazione di un utente", "/authadmin unregister ", true));
+                    sender.sendMessage(createAdminCmd("/authadmin reload", "Ricarica configurazione auth", "/authadmin reload", false));
+                }
+                sender.sendMessage(MessageUtil.format("&7Nota: disconnettendoti con /logout dovrai autenticarti nuovamente con /login."));
+            }
             default -> {
                 sender.sendMessage(MessageUtil.format("&cSezione '&e" + section + "&c' non trovata."));
                 sender.sendMessage(MessageUtil.format("&7Usa &e/aiuto&7 per vedere l'elenco completo delle sezioni disponibili."));
@@ -397,7 +412,7 @@ public class HelpCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
             boolean isAdmin = sender.isOp() || sender.hasPermission("caciottacore.admin");
-            List<String> sections = new ArrayList<>(List.of("home", "warp", "tpa", "tpback", "rtp", "sit", "sleep", "afk", "sb", "rank", "news", "bag", "cestino", "orario", "evento", "eventi"));
+            List<String> sections = new ArrayList<>(List.of("home", "warp", "tpa", "tpback", "rtp", "sit", "sleep", "afk", "sb", "rank", "news", "bag", "cestino", "orario", "evento", "eventi", "auth"));
             if (isAdmin) {
                 sections.add("admin");
                 sections.add("mod");

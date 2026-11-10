@@ -2,7 +2,7 @@
 
 **CaciottaCore** è un plugin completo per server Minecraft **PaperMC** (compatibile con **Paper 26.2** e Java 21+) che unisce:
 1. **Sistema Home avanzato**: supporto a home multipli, conto alla rovescia personalizzabile (con annullamento al movimento o danno), suoni, particelle, tab-completion e chat interattiva (clicca per teletrasportarti).
-2. **Sistema Autenticazione (Auth / Login & Register)**: login e registrazione obbligatori all'accesso, protezione crittografica sicura con **PBKDF2-HMAC-SHA256** e Salt crittografico, blocco totale delle azioni pre-login, effetti di cecità/lentezza, promemoria periodici e kick automatico per timeout o tentativi falliti.
+2. **Sistema Autenticazione (Auth / Login, Register & Logout)**: login e registrazione obbligatori all'accesso, disconnessione volontaria con `/logout`, protezione crittografica sicura con **PBKDF2-HMAC-SHA256** e Salt crittografico, blocco totale delle azioni pre-login, effetti di cecità/lentezza, promemoria periodici e kick automatico per timeout o tentativi falliti.
 3. **Sistema Rank completo**: gestione rank personalizzabili via `ranks.yml`, gerarchia con pesi (`weight`), permessi dinamici nativi Bukkit (`PermissionAttachment`), integrazione limiti home per rank, formattazione chat avanzata (`AsyncChatEvent` / Kyori Adventure), formattazione tablist e ordinamento visivo con Scoreboard Teams.
 4. **Sistema Teletrasporto (TPA)**: richieste con pulsanti cliccabili in chat, scadenza e annullamento.
 5. **Sistema Scoreboard laterale moderna**: scoreboard per giocatore flicker-free nativa Paper (Adventure API), animazione dinamica del titolo, numeri rossi nascosti (`NumberFormat.blank()`), statistiche PvP in tempo reale (uccisioni, morti, rapporto K/D), informazioni utente e server, integrazione dinamica con il rank (`{rank}` e `{rank_prefix}`), toggle individuale (`/sb`).
@@ -119,6 +119,7 @@ Basta copiarlo nella cartella `plugins/` del tuo server PaperMC e avviare il ser
 |---|---|---|---|
 | `/register <password> <conferma>` | Registra un nuovo account con password | *Nessuno (aperto a tutti)* | Tutti |
 | `/login <password>` | Accedi al server inserendo la tua password | *Nessuno (aperto a tutti)* | Tutti |
+| `/logout` | Disconnette il tuo account richiedendo nuovamente il login | `caciottacore.auth.logout` | Tutti |
 | `/changepassword <vecchia> <nuova>` | Modifica la password del tuo account | `caciottacore.auth.changepassword` | Tutti |
 | `/authadmin reload` | Ricarica la configurazione del plugin (`config.yml`) | `caciottacore.admin` | Solo OP |
 | `/authadmin unregister <player>` | Rimuove la registrazione di un utente | `caciottacore.admin` | Solo OP |

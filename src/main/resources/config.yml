@@ -246,6 +246,13 @@ auth:
     blindness: true
     slowness: true
 
+  # Abilita il volo temporaneo durante l'autenticazione per evitare che i giocatori sospesi in aria
+  # o senza blocchi sotto l'ultima posizione vengano espulsi dal server per "flying" (multiplayer.disconnect.flying)
+  temporary-flight: true
+
+  # Secondi di protezione dai danni da caduta dopo il login se il giocatore era sospeso in aria (0 per disabilitare)
+  fall-protection-seconds: 5
+
   # Sessione IP in minuti (se un utente rientra dallo stesso IP entro questi minuti, viene autenticato automaticamente)
   # Imposta 0 per richiedere sempre la password
   session-timeout-minutes: 10
@@ -455,6 +462,7 @@ messages:
     passwords-do-not-match: "&cLe password inserite non corrispondono!"
     register-success: "&aRegistrazione completata con successo! Benvenuto sul server."
     login-success: "&aAccesso effettuato con successo! Buona permanenza."
+    logout-success: "&aTi sei disconnesso con successo dal tuo account."
     wrong-password: "&cPassword errata! Tentativi rimasti: &e{attempts}&c."
     login-timeout: "&cTempo scaduto per accedere al server."
     max-attempts-exceeded: "&cHai superato il numero massimo di tentativi di accesso."

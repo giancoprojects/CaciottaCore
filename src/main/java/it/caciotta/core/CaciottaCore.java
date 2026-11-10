@@ -110,6 +110,13 @@ public final class CaciottaCore extends JavaPlugin {
         registerCommand("login", new LoginCommand(this));
         registerCommand("changepassword", new ChangePasswordCommand(this));
 
+        LogoutCommand logoutCommand = new LogoutCommand(this);
+        PluginCommand logoutCmd = getCommand("logout");
+        if (logoutCmd != null) {
+            logoutCmd.setExecutor(logoutCommand);
+            logoutCmd.setTabCompleter(logoutCommand);
+        }
+
         AuthAdminCommand authAdminCommand = new AuthAdminCommand(this);
         PluginCommand adminCmd = getCommand("authadmin");
         if (adminCmd != null) {

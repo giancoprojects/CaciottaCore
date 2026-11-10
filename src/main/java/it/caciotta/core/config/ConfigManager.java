@@ -357,7 +357,24 @@ public class ConfigManager {
             Map.entry("cestino.cleared-admin", "&aHai svuotato manualmente il cestino comune con successo! Il timer di 15 minuti e' stato riavviato."),
             Map.entry("cestino.reloaded", "&aConfigurazione e timer del cestino comune ricaricati con successo!"),
             Map.entry("cestino.item-forbidden", "&cNon puoi inserire questo oggetto (&e{item}&c) nel cestino!"),
-            Map.entry("cestino.usage-admin", "&cUso admin: &e/{label} <clear|reload>")
+            Map.entry("cestino.usage-admin", "&cUso admin: &e/{label} <clear|reload>"),
+
+            // Auth
+            Map.entry("auth.logout-success", "&aTi sei disconnesso con successo dal tuo account."),
+            Map.entry("auth.not-logged-in", "&cDevi prima accedere con &6/login <password>&c."),
+            Map.entry("auth.already-logged-in", "&cHai gia effettuato l'accesso."),
+            Map.entry("auth.must-register-first", "&cDevi prima registrarti con &6/register <password> <conferma>&c."),
+            Map.entry("auth.already-registered", "&cSei gia registrato. Usa &6/login <password>&c."),
+            Map.entry("auth.login-success", "&aAccesso effettuato con successo! Buona permanenza."),
+            Map.entry("auth.register-success", "&aRegistrazione completata con successo! Benvenuto sul server."),
+            Map.entry("auth.wrong-password", "&cPassword errata! Tentativi rimasti: &e{attempts}&c."),
+            Map.entry("auth.login-timeout", "&cTempo scaduto per accedere al server."),
+            Map.entry("auth.max-attempts-exceeded", "&cHai superato il numero massimo di tentativi di accesso."),
+            Map.entry("auth.blocked-action", "&cDevi prima accedere per compiere questa azione."),
+            Map.entry("auth.prompt-register", "&eBenvenuto! Registrati con: &6/register <password> <confermaPassword>"),
+            Map.entry("auth.prompt-login", "&eBentornato! Accedi con: &6/login <password>"),
+            Map.entry("auth.change-pass-success", "&aPassword aggiornata con successo!"),
+            Map.entry("auth.change-pass-wrong-old", "&cLa vecchia password inserita non e corretta.")
     );
 
     public String getRawMessage(String path) {
@@ -439,6 +456,14 @@ public class ConfigManager {
 
     public boolean isSlownessEffectEnabled() {
         return config.getBoolean("auth.effects.slowness", true);
+    }
+
+    public boolean isAuthTemporaryFlightEnabled() {
+        return config.getBoolean("auth.temporary-flight", true);
+    }
+
+    public int getAuthFallProtectionSeconds() {
+        return config.getInt("auth.fall-protection-seconds", 5);
     }
 
     public int getSessionTimeoutMinutes() {
